@@ -6,17 +6,17 @@ error_reporting(E_ALL);
 // Database configuration for Filao Adventures Admin
 // Adjust credentials to match your XAMPP MySQL setup
 
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'attwood');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_CHARSET', 'utf8mb4');
-
 // define('DB_HOST', 'localhost');
 // define('DB_NAME', 'attwood');
-// define('DB_USER', 'attwood');
-// define('DB_PASS', 'Attwood@2026');
+// define('DB_USER', 'root');
+// define('DB_PASS', '');
 // define('DB_CHARSET', 'utf8mb4');
+
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'faridagi_attwood');
+define('DB_USER', 'faridagi_attwood');
+define('DB_PASS', 'Attwood@2026');
+define('DB_CHARSET', 'utf8mb4');
 
 
 
