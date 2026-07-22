@@ -96,20 +96,23 @@ function getTourRoute($pdo, $tourId)
         
         <!-- Search Bar Container (Glassmorphism) -->
         <div class="aw-hero-search-glass mt-5">
-          <form class="d-flex align-items-center flex-wrap flex-md-nowrap w-100" action="tours" method="GET">
+          <form class="d-flex align-items-center flex-wrap flex-md-nowrap w-100" action="tours" method="GET" style="gap: 10px;">
             <div class="search-field">
               <input type="text" name="dest" placeholder="Search Destination" style="color:#fff;">
-              <i class="fa fa-angle-down"></i>
+              <i class="fa fa-map-marker"></i>
             </div>
             <div class="search-field">
-              <input type="text" name="month" placeholder="Travel Dates" style="color:#fff;">
-            </div>
-            <div class="search-field">
-              <input type="text" name="type" placeholder="Travel Type" style="color:#fff;">
-              <i class="fa fa-angle-down"></i>
+              <input type="month" name="month" style="color:#fff;" placeholder="Travel Dates">
             </div>
             <div class="search-field border-0">
-              <input type="number" name="guests" placeholder="Guests" style="color:#fff;">
+              <select name="guests" style="color:#fff; background: transparent; border: none; width: 100%; outline: none; appearance: none; -webkit-appearance: none; padding-right: 20px;">
+                <option value="" disabled selected>Guests</option>
+                <option value="1 Adult" style="color:#000;">1 Adult</option>
+                <option value="2 Adults" style="color:#000;">2 Adults</option>
+                <option value="2 Adults + 1 Child" style="color:#000;">2 Adults + 1 Child</option>
+                <option value="2 Adults + 2 Children" style="color:#000;">2 Adults + 2 Children</option>
+                <option value="Family / Group" style="color:#000;">Family / Group</option>
+              </select>
               <i class="fa fa-angle-down"></i>
             </div>
             <div class="search-btn-col ms-auto">
@@ -121,14 +124,8 @@ function getTourRoute($pdo, $tourId)
     </div>
   </div>
 
-  <!-- Bottom Socials & Scroll Indicator -->
-  <div class="aw-hero-bottom-bar d-flex justify-content-between align-items-end position-absolute w-100 px-4 px-lg-5 pb-4" style="bottom:0; z-index:10;">
-    <div class="aw-hero-socials d-flex gap-3">
-      <a href="#"><i class="fa fa-instagram"></i></a>
-      <a href="#"><i class="fa fa-youtube-play"></i></a>
-      <a href="#"><i class="fa fa-facebook"></i></a>
-      <a href="#"><i class="fa fa-tiktok"></i></a>
-    </div>
+  <!-- Bottom Scroll Indicator -->
+  <div class="aw-hero-bottom-bar d-flex justify-content-end align-items-end position-absolute w-100 px-4 px-lg-5 pb-4" style="bottom:0; z-index:10;">
     <div class="aw-hero-scroll text-white d-none d-md-block" style="font-family:'Inter', sans-serif; font-size:14px; font-weight:600; cursor:pointer;" onclick="window.scrollTo({top: window.innerHeight, behavior: 'smooth'})">
       Step Inside <i class="fa fa-arrow-down ml-2"></i>
     </div>
@@ -656,8 +653,7 @@ function getTourRoute($pdo, $tourId)
     if (destTrack && destSlides.length) {
       function getDestSPV() {
         var w = window.innerWidth;
-        if (w <= 480) return 1;
-        if (w <= 768) return 2;
+        if (w <= 768) return 1;
         if (w <= 1024) return 3;
         return 4;
       }

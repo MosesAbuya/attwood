@@ -166,6 +166,18 @@ $nights = max(1, (int)($tour['duration_days'] ?? 1)) - 1;
       gap: 0;
       padding: 0 16px;
     }
+    @media (max-width: 767px) {
+      .tdv2-tabs {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+      }
+      .tdv2-tab-btn {
+        flex: 1 1 calc(50% - 10px);
+        text-align: center;
+        padding: 10px 5px;
+        font-size: 11px;
+      }
+    }
     .tdv2-tabs::-webkit-scrollbar { display: none; }
     .tdv2-tab-btn {
       background: none;

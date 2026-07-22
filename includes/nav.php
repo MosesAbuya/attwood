@@ -152,6 +152,7 @@ if (!empty($navMultiCountryTours)) {
 ?>
 <!-- Hidden Google Translate Element -->
 <div id="google_translate_element" style="display:none;"></div>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit2"></script>
 
 <link rel="stylesheet" href="css/aw-navbar.css?v=<?= time() ?>">
 <script src="js/aw-navbar.js?v=<?= time() ?>"></script>
@@ -388,6 +389,26 @@ if (!empty($navMultiCountryTours)) {
     </div>
   </form>
 </header>
+
+<!-- ====== MOBILE OFF-CANVAS MENU ====== -->
+<div id="aw-mobile-menu" class="aw-mobile-overlay">
+  <div class="aw-mobile-menu-inner">
+    <div class="aw-mobile-header">
+      <img src="oldattwood/img/logo.png" alt="Attwood" style="max-height: 40px;">
+      <button id="aw-mobile-close" class="aw-btn-icon"><i class="fa fa-times" style="font-size:22px; color:#fff;"></i></button>
+    </div>
+    <ul class="aw-mobile-nav-list">
+      <li><a href="about">About</a></li>
+      <li><a href="destinations">Destinations <i class="fa fa-angle-right"></i></a></li>
+      <li><a href="tours">Tours <i class="fa fa-angle-right"></i></a></li>
+      <li><a href="activities">Activities <i class="fa fa-angle-right"></i></a></li>
+      <li><a href="blog">Blog</a></li>
+      <li style="margin-top:20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top:20px;">
+        <a href="#" id="aw-mobile-open-who-we-are">Who We Are <i class="fa fa-angle-right"></i></a>
+      </li>
+    </ul>
+  </div>
+</div>
 
 <!-- ====== FULL PAGE OVERLAY MENU ====== -->
 <div id="aw-fullpage-menu" class="aw-fullpage-overlay">

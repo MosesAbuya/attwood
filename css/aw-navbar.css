@@ -50,13 +50,13 @@
   flex-shrink: 0;
 }
 .aw-logo img {
-  max-height: 48px;
+  max-height: 40px;
   width: auto;
   transition: max-height 0.3s ease;
 }
 
 .aw-site-header.aw-scrolled-up .aw-logo img {
-  max-height: 40px;
+  max-height: 34px;
 }
 
 /* Main Navigation List */
@@ -82,8 +82,8 @@
 .aw-nav-item > a {
   color: #ffffff;
   text-decoration: none;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: 10px 0;
@@ -816,4 +816,97 @@ body.aw-fp-noscroll {
 
 .aw-mega-close:hover {
   background: #b88624;
+}
+
+/* =========================================================
+   Mobile Off-Canvas Menu
+   ========================================================= */
+.aw-mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.8);
+  z-index: 10000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+.aw-mobile-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.aw-mobile-menu-inner {
+  position: absolute;
+  top: 0;
+  left: -320px;
+  width: 300px;
+  height: 100vh;
+  background: #111;
+  padding: 20px;
+  transition: left 0.4s ease;
+  overflow-y: auto;
+  box-shadow: 5px 0 20px rgba(0,0,0,0.5);
+}
+.aw-mobile-overlay.active .aw-mobile-menu-inner {
+  left: 0;
+}
+
+.aw-mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.aw-mobile-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.aw-mobile-nav-list li {
+  margin-bottom: 15px;
+}
+.aw-mobile-nav-list a {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-decoration: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  letter-spacing: 1px;
+}
+.aw-mobile-nav-list a:hover {
+  color: var(--aw-primary);
+}
+.aw-mobile-nav-list i {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+}
+
+/* Mobile Search form stacking */
+@media (max-width: 767px) {
+  .aw-hero-search-glass form {
+    flex-direction: column !important;
+    gap: 15px !important;
+  }
+  .aw-hero-search-glass .search-field, 
+  .aw-hero-search-glass .search-btn-col {
+    width: 100% !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255,255,255,0.2) !important;
+  }
+  .aw-hero-search-glass .search-btn-col {
+    border-bottom: none !important;
+  }
+  .aw-btn-explore {
+    width: 100% !important;
+    border-radius: 6px !important;
+  }
 }

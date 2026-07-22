@@ -1457,7 +1457,22 @@ figcaption {
     /* ============================================================
        8. WHY CHOOSE SECTION
        ============================================================ */
-    .aw-why-section { padding: 70px 0; background: #faf8f4; }
+    .aw-why-section { 
+      padding: 70px 0; 
+      background: #faf8f4 url('oldattwood/img/slider/slide2.jpg') no-repeat center center;
+      background-size: cover;
+      position: relative;
+    }
+    .aw-why-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(250, 248, 244, 0.9); /* Whitewash overlay so text remains readable */
+    }
+    .aw-why-section > .container {
+      position: relative;
+      z-index: 2;
+    }
     .aw-why-img-wrap {
       overflow: hidden; border-radius: 6px; height: 480px;
       box-shadow: 4px 8px 28px rgba(0,0,0,0.14);
@@ -2673,4 +2688,16 @@ padding: 0;
 }
 .tdv2-dest-card:hover .tdv2-dc-overlay {
   background: linear-gradient(to top, rgba(227,58,27,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+}
+
+/* ============================================================
+   Footer Newsletter Mobile Overrides
+   ============================================================ */
+@media (max-width: 767px) {
+  .aw-newsletter-form-inline .aw-btn-dark {
+    background-color: var(--aw-primary) !important;
+    border-color: var(--aw-primary) !important;
+    color: #fff !important;
+    margin-bottom: 25px; /* Separate it from the experts below */
+  }
 }

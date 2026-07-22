@@ -54,15 +54,23 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // Full Page Overlay Toggle
+    // Full Page / Mobile Overlay Toggle
     const fullpageToggle = document.getElementById("aw-fullpage-toggle");
     const fullpageMenu = document.getElementById("aw-fullpage-menu");
     const fullpageClose = document.getElementById("aw-fullpage-close");
+    
+    const mobileMenu = document.getElementById("aw-mobile-menu");
+    const mobileClose = document.getElementById("aw-mobile-close");
+    const mobileOpenWhoWeAre = document.getElementById("aw-mobile-open-who-we-are");
 
-    if (fullpageToggle && fullpageMenu) {
+    if (fullpageToggle) {
         fullpageToggle.addEventListener("click", function(e) {
             e.preventDefault();
-            fullpageMenu.classList.add("active");
+            if(window.innerWidth <= 992 && mobileMenu) {
+                mobileMenu.classList.add("active");
+            } else if (fullpageMenu) {
+                fullpageMenu.classList.add("active");
+            }
             document.body.classList.add("aw-fp-noscroll");
         });
     }
@@ -72,6 +80,22 @@ document.addEventListener("DOMContentLoaded", function() {
             e.preventDefault();
             fullpageMenu.classList.remove("active");
             document.body.classList.remove("aw-fp-noscroll");
+        });
+    }
+
+    if (mobileClose && mobileMenu) {
+        mobileClose.addEventListener("click", function(e) {
+            e.preventDefault();
+            mobileMenu.classList.remove("active");
+            document.body.classList.remove("aw-fp-noscroll");
+        });
+    }
+
+    if (mobileOpenWhoWeAre && mobileMenu && fullpageMenu) {
+        mobileOpenWhoWeAre.addEventListener("click", function(e) {
+            e.preventDefault();
+            mobileMenu.classList.remove("active");
+            fullpageMenu.classList.add("active");
         });
     }
 
@@ -180,3 +204,37 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
 });
+
+// Google Translate function
+function googleTranslateElementInit2() {
+    new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        autoDisplay: false
+    }, 'google_translate_element');
+}
+
+function doGTranslate(lang_pair) {
+    if(lang_pair.value) lang_pair = lang_pair.value;
+    if(lang_pair == '') return;
+    var lang = lang_pair.split('|')[1];
+    var teCombo;
+    var sel = document.getElementsByTagName('select');
+    for (var i = 0; i < sel.length; i++) {
+        if (sel[i].className.indexOf('goog-te-combo') != -1) {
+            teCombo = sel[i];
+            break;
+        }
+    }
+    if (document.getElementById('google_translate_element') == null || document.getElementById('google_translate_element').innerHTML.length == 0 || typeof teCombo == 'undefined' || teCombo.length == 0 || teCombo.innerHTML.length == 0) {
+        setTimeout(function() { doGTranslate(lang_pair) }, 500);
+    } else {
+        teCombo.value = lang;
+        if (typeof document.createEvent != 'undefined') {
+            var evt = document.createEvent('HTMLEvents');
+            evt.initEvent('change', true, true);
+            teCombo.dispatchEvent(evt);
+        } else {
+            teCombo.fireEvent('onchange');
+        }
+    }
+}
