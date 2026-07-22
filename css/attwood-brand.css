@@ -2740,12 +2740,25 @@ padding: 0;
 }
 
 .aw-hero-search-wrapper {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, 50%);
+  position: relative;
+  margin-top: 40px;
   width: 100%;
-  max-width: 1040px;
   z-index: 20;
-  padding: 0 20px;
+}
+@media (max-width: 767px) {
+  .aw-hero-content-col {
+    position: static !important;
+  }
+  .aw-hero-search-wrapper {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    width: 100%;
+    margin-top: 0;
+    padding: 0 15px;
+  }
+  .aw-about-section {
+    margin-top: 150px !important;
+  }
 }

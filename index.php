@@ -90,51 +90,51 @@ function getTourRoute($pdo, $tourId)
   <!-- Content -->
   <div class="container h-100 position-relative" style="z-index: 10;">
     <div class="row h-100 align-items-center justify-content-center text-center">
-      <div class="col-12 col-md-10 col-lg-8 mt-5">
+      <div class="col-12 col-md-10 col-lg-8 mt-5 aw-hero-content-col">
         <h1 class="aw-hero-title-sleek">Your Perfect Safari Escape</h1>
         <p class="aw-hero-subtitle-sleek mt-3">Experience the art of travel through our curated destinations.<br>Your unforgettable adventure begins here.</p>
+        
+        <!-- Search Bar Overlapping Wrapper -->
+        <div class="aw-hero-search-wrapper">
+          <!-- Search Bar Container (Glassmorphism) -->
+          <div class="aw-hero-search-glass">
+            <form class="d-flex align-items-center flex-wrap flex-md-nowrap w-100" action="tours" method="GET" style="gap: 10px;">
+              <div class="search-field">
+                <div class="sf-icon"><i class="fa fa-map-marker"></i></div>
+                <div class="sf-input-group">
+                  <label>Destination</label>
+                  <input type="text" id="aw-dest-input" name="q" placeholder="Where do you want to go?" autocomplete="off">
+                </div>
+                <div id="aw-search-results" class="aw-search-results-dropdown d-none"></div>
               </div>
-    </div>
-  </div>
-
-  <!-- Search Bar Overlapping Wrapper -->
-  <div class="aw-hero-search-wrapper">
-    <!-- Search Bar Container (Glassmorphism) -->
-    <div class="aw-hero-search-glass">
-      <form class="d-flex align-items-center flex-wrap flex-md-nowrap w-100" action="tours" method="GET" style="gap: 10px;">
-        <div class="search-field">
-          <div class="sf-icon"><i class="fa fa-map-marker"></i></div>
-          <div class="sf-input-group">
-            <label>Destination</label>
-            <input type="text" id="aw-dest-input" name="q" placeholder="Where do you want to go?" autocomplete="off">
-          </div>
-          <div id="aw-search-results" class="aw-search-results-dropdown d-none"></div>
-        </div>
-        <div class="search-field">
-          <div class="sf-icon"><i class="fa fa-calendar"></i></div>
-          <div class="sf-input-group">
-            <label>Travel Dates</label>
-            <input type="text" name="month" style="color:#fff;" placeholder="Travel date" onfocus="(this.type='month')">
-          </div>
-        </div>
-        <div class="search-field border-0">
-          <div class="sf-icon"><i class="fa fa-users"></i></div>
-          <div class="sf-input-group" style="position:relative; width: 100%;">
-            <label>Guests</label>
-            <select name="guests" style="color:#fff; background: transparent; border: none; width: 100%; outline: none; appearance: none; -webkit-appearance: none; padding-right: 20px;">
-              <option value="1 Adult" style="color:#000;">1 Adult</option>
-              <option value="2 Adults" style="color:#000;">2 Adults</option>
-              <option value="2 Adults + 1 Child" style="color:#000;">2 Adults + 1 Child</option>
-              <option value="2 Adults + 2 Children" style="color:#000;">2 Adults + 2 Children</option>
-              <option value="Family / Group" style="color:#000;">Family / Group</option>
-            </select>
-            <i class="fa fa-angle-down" style="position:absolute; right:0; top:50%; transform:translateY(-50%); color:#fff; pointer-events:none;"></i>
+              <div class="search-field">
+                <div class="sf-icon"><i class="fa fa-calendar"></i></div>
+                <div class="sf-input-group">
+                  <label>Travel Dates</label>
+                  <input type="text" name="month" style="color:#fff;" placeholder="Travel date" onfocus="(this.type='month')">
+                </div>
+              </div>
+              <div class="search-field border-0">
+                <div class="sf-icon"><i class="fa fa-users"></i></div>
+                <div class="sf-input-group" style="position:relative; width: 100%;">
+                  <label>Guests</label>
+                  <select name="guests" style="color:#fff; background: transparent; border: none; width: 100%; outline: none; appearance: none; -webkit-appearance: none; padding-right: 20px;">
+                    <option value="1 Adult" style="color:#000;">1 Adult</option>
+                    <option value="2 Adults" style="color:#000;">2 Adults</option>
+                    <option value="2 Adults + 1 Child" style="color:#000;">2 Adults + 1 Child</option>
+                    <option value="2 Adults + 2 Children" style="color:#000;">2 Adults + 2 Children</option>
+                    <option value="Family / Group" style="color:#000;">Family / Group</option>
+                  </select>
+                  <i class="fa fa-angle-down" style="position:absolute; right:0; top:50%; transform:translateY(-50%); color:#fff; pointer-events:none;"></i>
+                </div>
+              </div>
+              <div class="search-btn-col ms-auto">
+                <button type="submit" class="aw-btn-explore">Explore</button>
+              </div>
+            </form>
           </div>
         </div>
-        <div class="search-btn-col ms-auto">
-          <button type="submit" class="aw-btn-explore">Explore</button>
-        </div>
-      </form>
+      </div>
     </div>
   </div>
 
@@ -143,7 +143,7 @@ function getTourRoute($pdo, $tourId)
 <!-- ====================================================
        2. ABOUT SECTION
        ==================================================== -->
-  <section class="aw-about-section" style="margin-top:150px;">
+  <section class="aw-about-section" style="margin-top:40px;">
     <div class="container" style="max-width:1280px;">
       <div class="row align-items-center">
         <!-- Image -->
