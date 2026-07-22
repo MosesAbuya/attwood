@@ -1,0 +1,134 @@
+// TZ Portfolio Default
+@import "../../../../../../../libraries/jollyany/framework/scss/jollyany/modules/tz-portfolio";
+.tplElegant {
+  #portfolio {
+    margin-left: -20px;
+    margin-right: -20px;
+  }
+  .TzPortfolioTitle {
+    font-size: 1.5rem;
+  }
+  .element {
+    .TzInner{
+      margin: 20px;
+      &:hover {
+        box-shadow: none;
+      }
+    }
+    .TzPortfolioDescription {
+      text-align: center;
+      .header-box > .TzPortfolioTitle {
+        margin-bottom: 3px;
+      }
+      .tpMeta {
+        margin-top: 3px;
+      }
+      .TzPortfolioIntrotext {
+        font-size: 0.875rem;
+        opacity: 0.8;
+      }
+    }
+    .TzArticleMedia {
+      margin-bottom: 1rem;
+      img {
+        border-radius: 10px;
+      }
+    }
+    .tz-extrafields {
+      border-top: 1px solid $border-color;
+      margin: 25px -1.25rem 0;
+      padding: 20px 30px 0 50px;
+    }
+    .tz_extrafield-item{
+      text-align: left;
+      margin: 5px 0;
+      list-style: disc;
+      display: list-item;
+      border: none;
+      padding: 0;
+      overflow: visible;
+      &::marker {
+        color: $colorMain;
+      }
+      > div {
+        display: inline-block;
+        float: none !important;
+      }
+      .tz_extrafield-label {
+        font-weight: bold;
+        width: auto;
+        &:after {
+          content: ': ';
+          display: inline;
+        }
+      }
+    }
+    .tpp-item-tags {
+      .tp-tags {
+        display: none;
+      }
+      a {
+        color: $colorMain;
+        text-transform: uppercase;
+      }
+    }
+  }
+}
+.tpArticleExtraField {
+  margin: 0;
+  font-size: 0.895rem;
+  .list-group-item {
+    padding: 17px 5px 13px;
+    border-left: none;
+    border-right: none;
+    &:first-child, &:last-child {
+      border-radius: 0;
+    }
+    & + .list-group-item {
+      border-top-width: 0;
+    }
+    h5 {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 3px;
+    }
+  }
+}
+.tpItemPage {
+  .tpTitle {
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .tpPortfolioLink {
+    margin: 0;
+    a {
+      width: 100%;
+    }
+  }
+  .tpArticleMedia {
+    margin-bottom: 0;
+  }
+  .border {
+    border-color: fade-out($colorMain, 0.8) !important;
+  }
+  .tpRelated {
+    margin: 0;
+    border: none;
+    background: none;
+    .tpArticleMedia {
+      margin-bottom: 1.5rem;
+    }
+  }
+}
+.tz-addon-feature {
+  img {
+    border-radius: 10px;
+  }
+}
+.tz_portfolio_plus_gallery .gallery-listing .image-caption {
+  font-size: 1.1rem;
+}
+.tpRelated-title {
+  font-size: 1.1rem;
+}

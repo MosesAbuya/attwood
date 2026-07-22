@@ -1,0 +1,56 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # --- Live Server Compatibility ---
+    # Explicit redirects for uploads and images to solve 404s
+    RewriteRule ^filao/uploads/(.*)$ /uploads/$1 [L,R=301]
+    RewriteRule ^filao/images/(.*)$ /images/$1 [L,R=301]
+
+    # Strip the /filao/ prefix from requests if the actual file/dir doesn't exist.
+    # This perfectly compensates for the <base href="/filao/"> tag when the project
+    # is deployed to a live domain's root directory.
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^filao/(.*)$ $1 [L,QSA]
+
+    # Redirect .php URLs to clean URLs (except admin/ directory)
+    RewriteCond %{THE_REQUEST} \s/([^/]+)\.php[\s?] [NC]
+    RewriteCond %{REQUEST_URI} !^/admin/ [NC]
+    RewriteRule ^(.+)\.php$ /$1 [R=301,L]
+
+    # Tour Permalinks
+    # Matches /tours/slug (no trailing slash required, but allowed)
+    RewriteRule ^tours/([^/]+)/?$ tour-detail.php?slug=$1 [L,QSA]
+
+    # Ad Permalinks
+    # Matches /ad/slug
+    RewriteRule ^ad/([^/]+)/?$ ad-landing.php?slug=$1 [L,QSA]
+
+    # Destination Permalinks
+    # Matches /destinations/slug
+    RewriteRule ^destinations/([^/]+)/?$ destination-detail.php?slug=$1 [L,QSA]
+
+    # Blog Permalinks
+    # Matches /blog/slug
+    RewriteRule ^blog/([^/]+)/?$ blog-detail.php?slug=$1 [L,QSA]
+
+    # Activities Permalinks
+    RewriteRule ^activities/([^/]+)/?$ activity-detail.php?slug=$1 [L,QSA]
+
+    # Remove .php extension
+    # If the requested URI is not a directory or file
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    # And if the corresponding .php file exists
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    # Rewrite to the .php file
+    RewriteRule ^([^\.]+)$ $1.php [NC,L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    <FilesMatch "\.(php)$">
+        Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </FilesMatch>
+</IfModule>

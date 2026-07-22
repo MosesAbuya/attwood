@@ -1,0 +1,320 @@
+<?php
+require_once 'includes/db.php';
+$pdo = getPDO();
+$where = ["t.status='published'"];
+$params = [];
+
+if (isset($_GET['joining']) && $_GET['joining'] == '1') {
+    $where[] = "t.is_joining_tour=1";
+}
+
+if (!empty($_GET['q'])) {
+    $q = "%" . $_GET['q'] . "%";
+    $where[] = "(
+        t.title LIKE ? OR 
+        t.excerpt LIKE ? OR 
+        EXISTS (
+            SELECT 1 FROM itinerary_steps ist 
+            JOIN destinations d ON d.id=ist.destination_id 
+            LEFT JOIN countries c ON d.country COLLATE utf8mb4_unicode_ci = c.name COLLATE utf8mb4_unicode_ci
+            LEFT JOIN regions r ON c.region_id = r.id
+            WHERE ist.tour_id=t.id AND (
+                d.name LIKE ? OR 
+                d.country LIKE ? OR
+                d.region LIKE ? OR
+                r.name LIKE ?
+            )
+        )
+    )";
+    $params[] = $q;
+    $params[] = $q;
+    $params[] = $q;
+    $params[] = $q;
+    $params[] = $q;
+    $params[] = $q;
+}
+
+if (!empty($_GET['dest'])) {
+    $d = "%" . $_GET['dest'] . "%";
+    $where[] = "(t.title LIKE ? OR EXISTS (
+        SELECT 1 FROM itinerary_steps ist 
+        JOIN destinations d ON d.id=ist.destination_id 
+        LEFT JOIN countries c ON d.country COLLATE utf8mb4_unicode_ci = c.name COLLATE utf8mb4_unicode_ci
+        LEFT JOIN regions r ON c.region_id = r.id
+        WHERE ist.tour_id=t.id AND (
+            d.name LIKE ? OR 
+            d.country LIKE ? OR
+            d.region LIKE ? OR
+            r.name LIKE ?
+        )
+    ))";
+    $params[] = $d;
+    $params[] = $d;
+    $params[] = $d;
+    $params[] = $d;
+    $params[] = $d;
+}
+
+if (!empty($_GET['dur']) && is_array($_GET['dur'])) {
+    $durConditions = [];
+    foreach ($_GET['dur'] as $dur) {
+        if ($dur === '1-3') $durConditions[] = "(t.duration_days BETWEEN 1 AND 3)";
+        elseif ($dur === '4-5') $durConditions[] = "(t.duration_days BETWEEN 4 AND 5)";
+        elseif ($dur === '6-7') $durConditions[] = "(t.duration_days BETWEEN 6 AND 7)";
+        elseif ($dur === '8+') $durConditions[] = "(t.duration_days >= 8)";
+    }
+    if (!empty($durConditions)) $where[] = "(" . implode(" OR ", $durConditions) . ")";
+}
+
+$join = "";
+if (!empty($_GET['cat']) && is_array($_GET['cat'])) {
+    $join = "JOIN activity_tour at ON t.id = at.tour_id JOIN activities a ON at.activity_id = a.id";
+    $catConditions = [];
+    foreach ($_GET['cat'] as $c) {
+        $catConditions[] = "a.slug = ?";
+        $params[] = $c;
+    }
+    if (!empty($catConditions)) $where[] = "(" . implode(" OR ", $catConditions) . ")";
+}
+
+if (!empty($_GET['price']) && is_array($_GET['price'])) {
+    $priceConditions = [];
+    foreach ($_GET['price'] as $p) {
+        if ($p === '500-1500') $priceConditions[] = "(t.price_from_usd BETWEEN 500 AND 1500)";
+        elseif ($p === '1500-3000') $priceConditions[] = "(t.price_from_usd BETWEEN 1500 AND 3000)";
+        elseif ($p === '3000+') $priceConditions[] = "(t.price_from_usd >= 3000)";
+    }
+    if (!empty($priceConditions)) $where[] = "(" . implode(" OR ", $priceConditions) . ")";
+}
+
+$whereSql = implode(" AND ", $where);
+$stmt = $pdo->prepare("SELECT DISTINCT t.id, t.title, t.slug, t.duration_days, t.price_from_usd, t.excerpt, t.description, t.featured_image, t.status FROM tours t $join WHERE $whereSql ORDER BY t.duration_days ASC");
+$stmt->execute($params);
+$tours = $stmt->fetchAll();
+
+function getTourRouteT($pdo,$id){
+  $s=$pdo->prepare("SELECT d.name FROM itinerary_steps ist JOIN destinations d ON d.id=ist.destination_id WHERE ist.tour_id=? ORDER BY ist.step_number ASC");
+  $s->execute([$id]);
+  $names = $s->fetchAll(PDO::FETCH_COLUMN);
+  $names = array_map('htmlspecialchars', $names);
+  return implode(' &rarr; ', $names);
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Safari Tours &amp; Holiday Packages &mdash; Attwood Travel Agency Ltd</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Browse Attwood Travel Agency Ltd' expertly crafted safari tours, beach holidays and international packages. Find your perfect journey.">
+  <link rel="icon" href="assets/favicon_io/favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/animate.css">
+  <link rel="stylesheet" href="css/owl.carousel.min.css">
+  <link rel="stylesheet" href="css/owl.theme.default.min.css">
+  <link rel="stylesheet" href="css/flaticon.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="assets/css/attwood-theme.css">
+  <style>
+    .filter-sidebar { background:#fff; padding:32px; border:1px solid var(--aw-border); border-radius:12px; box-shadow:var(--aw-shadow-card); position:sticky;top:160px; }
+    .filter-sidebar h5 { font-family:var(--aw-font-body); font-size:22px; font-weight:800; color:var(--aw-text-dark); margin-bottom:24px; padding-bottom:12px; border-bottom:1px solid var(--aw-border); }
+    .filter-sidebar .filter-group { margin-bottom:20px; padding-bottom:18px; border-bottom:1px solid #EDE8E0; }
+    .filter-sidebar label { display:flex;align-items:center;gap:8px;font-size:14px;color:var(--aw-text-body); font-family:var(--aw-font-ui); cursor:pointer;padding:3px 0; }
+    .filter-sidebar input[type=checkbox] { accent-color:var(--aw-primary); }
+    .filter-count { font-size:12px;color:var(--aw-text-muted);margin-left:auto; }
+    .btn-filter { width:100%; background:var(--aw-accent-olive); color:#fff; border:none; padding:12px; font-size:13px; font-weight:700; cursor:pointer; border-radius:999px; font-family:var(--aw-font-ui); margin-bottom:12px; transition:var(--aw-transition); }
+    .btn-filter:hover { opacity:0.9; }
+    .btn-filter-clear { display:block; text-align:center; font-size:13px; color:var(--aw-text-muted); text-decoration:none; font-family:var(--aw-font-ui); }
+    .results-info { font-size:14px;color:var(--aw-text-body);margin-bottom:24px;font-family:var(--aw-font-ui); }
+  </style>
+<link rel="stylesheet" href="css/attwood-brand.css?v=<?= time() ?>">
+<?php @include_once __DIR__.'/includes/head_tags.php'; ?>
+</head>
+<body>
+<?php require_once 'includes/nav.php'; ?>
+
+<!-- Page Hero -->
+<section class="tdv2-hero" style="background-image:url('oldattwood/img/slider/slider-1.jpg');">
+  <div class="tdv2-hero-overlay"></div>
+  <div class="tdv2-hero-content">
+    <div class="tdv2-hero-eyebrow" style="margin-bottom:12px;">Discover Africa</div>
+    <h1>Our Tours &amp; Safaris</h1>
+  </div>
+  <div class="tdv2-hero-breadcrumb">
+    <a href="index.php">Home</a>
+    <span class="sep">/</span>
+    <span class="current">Tours</span>
+  </div>
+</section>
+
+<!-- Content -->
+<section class="section-pad bg-cream">
+  <div class="container" style="max-width:1280px;">
+    <div class="row">
+      <!-- Filter Sidebar -->
+      <div class="col-lg-3 col-md-4 mb-5 d-none d-md-block">
+        <form method="GET" action="tours.php" id="tours-filter-form">
+          <div class="filter-sidebar">
+            <h5>Filter Tours</h5>
+            <div class="filter-group">
+              <div class="mb-2" style="font-size:10.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#6B6358;font-family:'Inter',sans-serif;">Category</div>
+              <label><input type="checkbox" name="cat[]" value="safari"> Safari Tours <span class="filter-count">(5)</span></label>
+              <label><input type="checkbox" name="cat[]" value="beach"> Beach Holidays <span class="filter-count">(2)</span></label>
+              <label><input type="checkbox" name="cat[]" value="city"> City Tours <span class="filter-count">(1)</span></label>
+              <label><input type="checkbox" name="cat[]" value="international"> International <span class="filter-count">(3)</span></label>
+            </div>
+            <div class="filter-group">
+              <div class="mb-2" style="font-size:10.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#6B6358;font-family:'Inter',sans-serif;">Joining Tours</div>
+              <label><input type="checkbox" name="joining" value="1" <?= isset($_GET['joining']) && $_GET['joining'] == '1' ? 'checked' : '' ?>> Joining Tours Only</label>
+            </div>
+            <div class="filter-group">
+              <div class="mb-2" style="font-size:10.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#6B6358;font-family:'Inter',sans-serif;">Duration</div>
+              <label><input type="checkbox" name="dur[]" value="1-3"> 1&ndash;3 Days <span class="filter-count">(2)</span></label>
+              <label><input type="checkbox" name="dur[]" value="4-5"> 4&ndash;5 Days <span class="filter-count">(3)</span></label>
+              <label><input type="checkbox" name="dur[]" value="6-7"> 6&ndash;7 Days <span class="filter-count">(1)</span></label>
+              <label><input type="checkbox" name="dur[]" value="8+"> 8+ Days <span class="filter-count">(1)</span></label>
+            </div>
+            <div class="filter-group" style="border-bottom:none;">
+              <div class="mb-2" style="font-size:10.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#6B6358;font-family:'Inter',sans-serif;">Budget</div>
+              <label><input type="checkbox" name="price[]" value="500-1500"> $500 &ndash; $1,500</label>
+              <label><input type="checkbox" name="price[]" value="1500-3000"> $1,500 &ndash; $3,000</label>
+              <label><input type="checkbox" name="price[]" value="3000+"> $3,000+</label>
+            </div>
+            <button type="submit" class="btn-filter">Apply Filters</button>
+            <a href="tours" class="btn-filter-clear">Clear All</a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Tour Cards -->
+      <div class="col-lg-9 col-md-8" id="tours-container">
+        <div id="tours-loading" style="display:none; text-align:center; padding:50px 0;">
+          <i class="fa fa-spinner fa-spin fa-3x" style="color:#C49018;"></i>
+        </div>
+        <div id="tours-content">
+        <p class="results-info">Showing <strong><?= count($tours) ?></strong> tours &mdash; all crafted in Kenya by local experts</p>
+        <div class="row">
+          <?php
+          foreach($tours as $idx => $tour):
+            $img = !empty($tour['featured_image']) ? 'uploads/'.$tour['featured_image'] : 'images/Attwood/East Africa/pexels-balazsimon-15993990.jpg';
+            $route = getTourRouteT($pdo, $tour['id']);
+            $excerpt = !empty($tour['excerpt']) ? $tour['excerpt'] : (!empty($tour['description']) ? $tour['description'] : '');
+            $nights = max(1, (int)($tour['duration_days'] ?? 1)) - 1;
+          ?>
+          <div class="col-md-6 mb-5 d-flex">
+            <div class="aw-tour-card w-100">
+              <div class="aw-tour-img-wrap">
+                <div class="aw-tour-featured">Featured</div>
+                <a href="tours/<?= $tour['slug'] ?? '' ?>">
+                  <img src="<?= htmlspecialchars($img) ?>" alt="<?= htmlspecialchars($tour['title'] ?? '') ?>" loading="lazy">
+                </a>
+              </div>
+              <div class="aw-tour-body">
+                <div class="aw-tour-title"><a href="tours/<?= $tour['slug'] ?? '' ?>"><?= htmlspecialchars($tour['title'] ?? '') ?></a></div>
+                
+                <div class="aw-tour-details-row">
+                  <div class="aw-tour-meta">
+                    <div class="aw-tour-meta-item">
+                      <i class="fa fa-map-marker"></i>
+                      <span><?= getTourCountries($pdo, $tour['id']) ?></span>
+                    </div>
+                    <div class="aw-tour-meta-item">
+                      <i class="fa fa-clock-o"></i>
+                      <span><?= ($nights+1) ?> Days - <?= $nights ?> Nights</span>
+                    </div>
+                  </div>
+                  
+                  <div class="aw-tour-price-box">
+                    <?php if (!empty($tour['price_from_usd'])): ?>
+                      <span class="aw-tour-discount">Best Offer</span>
+                      <div class="aw-tour-old-price">$<?= number_format($tour['price_from_usd'] * 1.15) ?></div>
+                      <div class="aw-tour-new-price">$<?= number_format($tour['price_from_usd']) ?></div>
+                    <?php else: ?>
+                      <div class="aw-tour-new-price" style="font-size:14px;color:#ff6a1a;">Enquire Now</div>
+                    <?php endif; ?>
+                  </div>
+                </div>
+
+                <a href="tours/<?= $tour['slug'] ?? '' ?>" class="aw-tour-cta-btn">View Details</a>
+              </div>
+            </div>
+          </div>
+          <?php endforeach; ?>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="fa-cta-banner" style="background-image:url('oldattwood/img/slider/slide8.jpg');">
+  <div class="overlay"></div>
+  <div class="container fa-cta-content" style="max-width:1280px;">
+    <h2>Can't Find Your Perfect Safari?</h2>
+    <p>Let our specialists craft a custom tour built entirely around your travel dates, budget, and dreams.</p>
+    <a href="contact" class="btn-attwood-cta" style="padding:14px 32px;">Get a Custom Quote</a>
+  </div>
+</section>
+
+<?php require_once 'includes/footer.php'; ?>
+<script src="js/jquery.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="assets/js/attwood-nav.js"></script>
+<script src="js/start-planning.js?v=1781967414"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('tours-filter-form');
+    const container = document.getElementById('tours-container');
+    const content = document.getElementById('tours-content');
+    const loading = document.getElementById('tours-loading');
+
+    if(!form || !container) return;
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        fetchTours();
+    });
+
+    // Auto-submit on checkbox change
+    const inputs = form.querySelectorAll('input[type="checkbox"]');
+    inputs.forEach(input => {
+        input.addEventListener('change', fetchTours);
+    });
+
+    function fetchTours() {
+        const formData = new FormData(form);
+        const params = new URLSearchParams(formData);
+        const url = form.action + '?' + params.toString();
+
+        content.style.display = 'none';
+        loading.style.display = 'block';
+
+        window.history.pushState({path: url}, '', url);
+
+        fetch(url)
+            .then(res => res.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newContent = doc.getElementById('tours-content');
+                if(newContent) {
+                    content.innerHTML = newContent.innerHTML;
+                }
+                loading.style.display = 'none';
+                content.style.display = 'block';
+            })
+            .catch(() => {
+                window.location.href = url;
+            });
+    }
+
+    window.addEventListener('popstate', function() {
+        window.location.reload();
+    });
+});
+</script>
+</body>
+</html>

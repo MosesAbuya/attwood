@@ -1,0 +1,104 @@
+.tz_portfolio_plus_gallery img {
+  width: 100%;
+  height: auto;
+}
+.tz_portfolio_plus_gallery .gallery-listing {
+  position: relative;
+}
+.tz_portfolio_plus_gallery .gallery-listing:hover .gallery-title {
+  opacity: 1;
+}
+.tz_portfolio_plus_gallery .gallery-listing:hover .gallery-image img {
+  filter: blur(2px);
+}
+.tz_portfolio_plus_gallery .gallery-listing .image-caption {
+  text-align: center;
+}
+.tz_portfolio_plus_gallery .gallery-listing .image-caption.on_overlay {
+  color: white;
+}
+.tz_portfolio_plus_gallery .gallery-image {
+  line-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+.tz_portfolio_plus_gallery .gallery-image img {
+  filter: blur(0px);
+  transition: filter 0.3s ease-in;
+  transform: scale(1.1);
+}
+.tz_portfolio_plus_gallery .gallery-inner {
+  position: relative;
+}
+.tz_portfolio_plus_gallery a.gallery-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  text-decoration: none;
+  z-index: 1;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity .5s;
+  background: rgba(0,0,0,0.4);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.tz_portfolio_plus_gallery a.gallery-title:hover {
+  color: #ffffff;
+  text-decoration: none;
+}
+@media (hover: none) {
+  .tz_portfolio_plus_gallery .gallery-title {
+    opacity: 1;
+  }
+}
+.tz_portfolio_plus_gallery.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(300px,1fr));
+  grid-gap: 1em;
+}
+.tz_portfolio_plus_gallery.grid-container .gallery-inner, .tz_portfolio_plus_gallery.grid-container .gallery-image, .tz_portfolio_plus_gallery.grid-container img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+.tz_portfolio_plus_gallery.masonry-container {
+  margin: 0 -15px;
+}
+.tz_portfolio_plus_gallery.masonry-container .gallery-inner {
+  padding: 15px;
+}
+.tz_portfolio_plus_gallery.horizontal_masonry-container {
+  display: flex;
+  flex-flow: row wrap;
+  margin-left: -8px;
+  width: 100%;
+}
+.tz_portfolio_plus_gallery.horizontal_masonry-container .gallery-listing {
+  flex: auto;
+  height: 250px;
+  min-width: 150px;
+  margin: 0 0 8px 8px;
+  overflow: hidden;
+}
+.tz_portfolio_plus_gallery.horizontal_masonry-container .gallery-listing .gallery-inner, .tz_portfolio_plus_gallery.horizontal_masonry-container .gallery-listing .gallery-image, .tz_portfolio_plus_gallery.horizontal_masonry-container .gallery-listing img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+.tz_portfolio_plus_gallery.grid-container .gallery-listing .image-caption.under_image, .tz_portfolio_plus_gallery.horizontal_masonry-container .gallery-listing .image-caption.under_image {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.3);
+  color: white;
+  margin: 0;
+  padding: 10px;
+}

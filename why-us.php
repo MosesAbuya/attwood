@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Why Book With Attwood? &mdash; Attwood Travel Agency Ltd</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="icon" href="assets/favicon_io/favicon.ico">
+  <?php $base_href = ($_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['HTTP_HOST'] === '127.0.0.1') ? '/attwood/' : '/'; ?>
+  <base href="<?= $base_href ?>">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/attwood-theme.css">
+  <style>
+    .rich-content h3 { font-family: 'Cormorant Garant', serif; font-size: 32px; color: #1C1712; margin-top: 40px; margin-bottom: 20px; font-weight: 500; }
+    .rich-content p { font-size: 16.5px; color: #4A4340; line-height: 1.85; margin-bottom: 20px; font-family: 'Inter', sans-serif; }
+    .rich-content blockquote { font-family: 'Cormorant Garant', serif; font-size: 24px; font-style: italic; color: #C49018; padding: 30px; border-left: 5px solid #C49018; background: #FAF8F4; margin: 40px 0; line-height: 1.6; }
+    .rich-content ul { font-size: 16px; color: #4A4340; line-height: 1.8; margin-bottom: 25px; }
+    .rich-content ul li { margin-bottom: 10px; }
+  </style>
+<?php @include_once __DIR__.'/includes/head_tags.php'; ?>
+
+<link rel="stylesheet" href="css/attwood-brand.css?v=<?= time() ?>">
+</head>
+<body>
+<?php require_once 'includes/nav.php'; ?>
+
+<section class="aw-page-hero" style="background-image:url('oldattwood/img/slider/slider-1.jpg'); height: 500px; position:relative; background-size:cover; background-position:center;">
+  <div class="overlay" style="position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0.3));"></div>
+  <div class="container aw-page-hero-content" style="max-width:1280px;text-align:center;position:relative;z-index:2; height:100%; display:flex; flex-direction:column; justify-content:center; padding-top:80px;">
+    <h1 style="font-family:'Cormorant Garant',serif;font-size:clamp(40px,5vw,60px);color:#fff;margin-bottom:15px;">The Attwood Difference</h1>
+    <div class="breadcrumb-fa justify-content-center" style="font-family:'Inter',sans-serif;font-size:13px;color:rgba(255,255,255,0.8);">
+      <a href="index" style="color:rgba(255,255,255,0.8);"><i class="fa fa-home"></i></a>
+      <span class="bc-sep" style="margin:0 10px;">/</span>
+      <span class="bc-current" style="color:#fff;font-weight:600;">Why Book With Attwood?</span>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad bg-cream" style="padding: 80px 0;">
+  <div class="container" style="max-width:1050px; margin: 0 auto; background: #fff; padding: 60px 4%; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.04);">
+    <div class="rich-content">
+      
+            <h3>Uncompromising Luxury. Unrivaled Expertise.</h3>
+            <p>In an era of mass tourism and automated booking platforms, Attwood Travel Agency Ltd stands apart as an artisan of luxury travel. We do not sell off-the-shelf packages. We are a boutique safari outfitter, deeply rooted in African soil, dedicated to crafting journeys that transcend the ordinary.</p>
+            
+            <div class="row mt-5">
+                <div class="col-md-6 mb-4">
+                    <h4 style="font-family:'Cormorant Garant',serif; font-size:24px; color:#1C1712;">1. We Are Africa Experts</h4>
+                    <p>We don't rely on Google or third-party brochures. Our knowledge is firsthand, granular, and constantly updated. We know which specific tent at a lodge has the best view of the river, the exact week the wildebeest usually arrive in the northern Serengeti, and the hidden airstrips that save you hours of driving.</p>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <h4 style="font-family:'Cormorant Garant',serif; font-size:24px; color:#1C1712;">2. Bespoke Tailoring</h4>
+                    <p>Your safari is a blank canvas. We take the time to understand your pace, your passions, and your non-negotiables. Whether you require a private vehicle for hardcore photography, wheelchair-accessible luxury suites, or a family-friendly camp with activities for young children, we design the itinerary around you.</p>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <h4 style="font-family:'Cormorant Garant',serif; font-size:24px; color:#1C1712;">3. White-Glove 24/7 Support</h4>
+                    <p>From the moment you arrive until you board your flight home, you are under our wing. You will have a dedicated concierge available 24/7. Should a flight be delayed or a sudden change of plans arise, our team handles it invisibly in the background, ensuring your peace of mind is never disturbed.</p>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <h4 style="font-family:'Cormorant Garant',serif; font-size:24px; color:#1C1712;">4. Direct Value</h4>
+                    <p>Because we are headquartered in Africa, we contract directly with the premier lodges, private reserves, and aviation companies. We bypass the international middlemen, allowing us to offer you unparalleled value, exclusive upgrades, and our strict Best Price Guarantee.</p>
+                </div>
+            </div>
+
+            <blockquote class="mt-4">"Booking with Attwood means securing the luxury of total peace of mind. We handle the complex logistics so you can surrender entirely to the magic of the African wild."</blockquote>
+        
+    </div>
+  </div>
+</section>
+
+<!-- Company Vehicles Section -->
+<section class="section-pad" style="padding: 80px 0; background: #fff;">
+  <div class="container" style="max-width:1200px;">
+    <div style="text-align:center; margin-bottom: 50px;">
+      <h2 style="font-family:'Cormorant Garant',serif; font-size:42px; color:#1C1712;">Our Safari Vehicles</h2>
+      <p style="font-family:'Inter',sans-serif; font-size:16px; color:#4A4340; max-width:700px; margin:0 auto;">
+        Experience the African wild in absolute comfort and safety. Our custom 4x4 safari Land Cruisers are specially adapted for rugged terrain and prime wildlife viewing, complete with pop-up roofs and large windows.
+      </p>
+    </div>
+    <div class="row g-4">
+      <div class="col-lg-4 col-md-6 mb-4">
+        <img src="oldattwood/img/beach.jpg" alt="Attwood Safari Car" class="img-fluid" style="border-radius:12px; width:100%; height:300px; object-fit:cover; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
+      </div>
+      <div class="col-lg-4 col-md-6 mb-4">
+        <img src="oldattwood/img/safa.jpg" alt="Tour Vehicle" class="img-fluid" style="border-radius:12px; width:100%; height:300px; object-fit:cover; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
+      </div>
+      <div class="col-lg-4 col-md-6 mb-4">
+        <img src="oldattwood/img/safaris.jpg" alt="Tourists on Safari" class="img-fluid" style="border-radius:12px; width:100%; height:300px; object-fit:cover; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
+      </div>
+      <div class="col-lg-6 col-md-6 mb-4">
+        <img src="oldattwood/img/team.jpg" alt="Safari Car Open Door" class="img-fluid" style="border-radius:12px; width:100%; height:350px; object-fit:cover; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
+      </div>
+      <div class="col-lg-6 col-md-6 mb-4">
+        <img src="oldattwood/img/group.jpg" alt="Picnic with Safari Car" class="img-fluid" style="border-radius:12px; width:100%; height:350px; object-fit:cover; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Call to Action -->
+<section style="background-image:url('oldattwood/img/slider/slide5.jpg'); background-size:cover; background-position:center; position:relative; padding:100px 0;">
+  <div style="position:absolute; inset:0; background:rgba(30,18,8,0.75);"></div>
+  <div class="container" style="max-width:900px; position:relative; z-index:2; text-align:center;">
+    <h2 style="font-family:var(--aw-font-body); font-size:clamp(36px,5vw,50px); font-weight:800; color:#fff; margin-bottom:20px;">Ready To Experience The Extraordinary?</h2>
+    <p style="font-family:var(--aw-font-ui); font-size:18px; color:rgba(255,255,255,0.85); margin-bottom:40px;">Our Safari Specialists are ready to craft a bespoke itinerary tailored precisely to your dreams.</p>
+    <button data-open-planner="true" class="aw-btn-primary" style="padding:16px 40px; font-size:16px;">Start Planning Now</button>
+  </div>
+</section>
+
+<?php require_once 'includes/footer.php'; ?>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="assets/js/attwood-nav.js"></script>
+</body>
+</html>

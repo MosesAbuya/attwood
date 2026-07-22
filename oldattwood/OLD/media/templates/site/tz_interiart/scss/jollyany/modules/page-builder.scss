@@ -1,0 +1,23 @@
+// Page Builder Default
+@import "../../../../../../../libraries/jollyany/framework/scss/jollyany/modules/page-builder";
+.tz-visible-right {
+  overflow: visible;
+  clip-path: inset(-100vw -100vw -100vw 0);
+}
+.rtl {
+  .tz-visible-right {
+    clip-path: inset(-100vw 0 -100vw -100vw);
+  }
+}
+.uk-dotnav > .uk-active>* {
+  width: 30px;
+  border-radius: 10px;
+  -webkit-transition: all 0.3s linear;
+  -moz-transition: all 0.3s linear;
+  -ms-transition: all 0.3s linear;
+  -o-transition: all 0.3s linear;
+  transition: all 0.3s linear;
+}
+.sppb-addon-person .sppb-person-image {
+  margin-bottom: 30px;
+}

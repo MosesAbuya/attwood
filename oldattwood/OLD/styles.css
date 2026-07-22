@@ -1,0 +1,7 @@
+.astroid-header-section header.astroid-horizontal-header:not(.astroid-header-sticky) {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.astroid-logo img {
+  max-height: 70px;
+}

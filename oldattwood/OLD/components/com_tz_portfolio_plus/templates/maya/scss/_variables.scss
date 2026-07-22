@@ -1,0 +1,13 @@
+/* Override Font Awesome variables */
+$fa-font-path:         "../../../fonts" !default;
+
+/* My variables */
+$border-base:     #ebebeb;
+$background-gray: #f9f9f9;
+$star_color:      #ffca28;
+
+$tp-color-white:  #fff;
+$tp-color-meta:   darken($background-gray,43%);
+
+$tp-color-base:         #202020;
+$tp-color-meta:   lighten($tp-color-base, 42%);

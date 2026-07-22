@@ -1,0 +1,52 @@
+// Hikashop Default
+@import "../../../../../../../libraries/jollyany/framework/scss/jollyany/modules/hikashop";
+.hikashop_products, .hikashop_product_page {
+  input[type="text"] {
+    background-color: transparent;
+  }
+}
+.hikashop_product_page {
+  background-color: white;
+  padding: 40px 30px;
+  border: 1px solid fade-out($colorMain, 0.8);
+}
+.hide_filter_title {
+  .hikashop_filter_title {
+    display: none;
+    & + * {
+      display: none;
+    }
+  }
+}
+.hikashop_global_image_div .hikashop_small_image_div img.hikashop_child_image {
+  height: 80px;
+}
+span.hikashop_product_name {
+  text-align: inherit;
+}
+.hikashop_product_image {
+  .uk-slideshow-items {
+    border-radius: 10px;
+  }
+}
+h4.hikashop_product_name {
+  font-size: 1.2rem;
+}
+.hikashop_products_listing {
+  .hikashop_container {
+    background-color: white;
+    padding: 20px 20px 35px;
+    border: 1px solid fade-out($colorMain, 0.8);
+    -webkit-transition: all 0.4s ease-in-out 0s;
+    -moz-transition: all 0.4s ease-in-out 0s;
+    -o-transition: all 0.4s ease-in-out 0s;
+    transition: all 0.4s ease-in-out 0s;
+    .hikashop_product_image_inner img {
+      mix-blend-mode: multiply;
+    }
+    &:hover {
+      border-width: 5px;
+      border-color: fade-out($colorMain, 0.5);
+    }
+  }
+}

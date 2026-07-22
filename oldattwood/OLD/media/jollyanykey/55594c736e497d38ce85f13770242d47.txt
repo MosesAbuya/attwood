@@ -1,0 +1,1 @@
+{"action":"activate-product","api":"https:\/\/www.templaza.com","envatoid":8596818,"productname":"Jollyany","url":"http:\/\/joomla.templaza.com\/interiart\/joomla\/jollyany_installation\/kickstart.php","callback_url":"http:\/\/joomla.templaza.com\/interiart\/joomla\/jollyany_installation\/kickstart.php?jollyany=activation&key=55594c736e497d38ce85f13770242d47"}
