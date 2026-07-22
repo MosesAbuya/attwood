@@ -102,7 +102,7 @@ function getTourRoute($pdo, $tourId)
               <i class="fa fa-map-marker"></i>
             </div>
             <div class="search-field">
-              <input type="month" name="month" style="color:#fff;" placeholder="Travel Dates">
+              <input type="text" name="month" style="color:#fff;" placeholder="Travel date" onfocus="(this.type='month')">
             </div>
             <div class="search-field border-0">
               <select name="guests" style="color:#fff; background: transparent; border: none; width: 100%; outline: none; appearance: none; -webkit-appearance: none; padding-right: 20px;">
@@ -563,8 +563,10 @@ function getTourRoute($pdo, $tourId)
     <div class="container" style="max-width:900px;">
       <h2>Request a Quotation Now!</h2>
       <p>Ready to turn your dream holiday into reality? Speak with an Attwood specialist today — let us craft your perfect journey.</p>
-      <a href="contact" class="aw-btn-red mr-3" style="font-size:16px;padding:14px 36px;">Request Now <i class="fa fa-arrow-right ml-2"></i></a>
-      <a href="tours" class="aw-btn-olive" style="font-size:16px;padding:14px 36px;">Browse Tours</a>
+      <div class="aw-cta-buttons" style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+        <a href="contact" class="aw-btn-red" style="font-size:16px;padding:14px 36px;">Request Now <i class="fa fa-arrow-right ml-2"></i></a>
+        <a href="tours" class="aw-btn-olive" style="font-size:16px;padding:14px 36px;">Browse Tours</a>
+      </div>
     </div>
   </section>
 
@@ -572,7 +574,7 @@ function getTourRoute($pdo, $tourId)
   <?php require_once 'includes/footer.php'; ?>
 
   <!-- loader -->
-  <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px">
+  <div id="ftco-loader" class="fullscreen"><svg class="circular" width="48px" height="48px">
     <circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/>
     <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#ff0000"/>
   </svg></div>
@@ -685,9 +687,14 @@ function getTourRoute($pdo, $tourId)
         var spv = getDestSPV();
         // Responsive slide widths
         destSlides.forEach(function(sl) {
-          var pct = (100 / spv) - 1.5;
-          sl.style.flex = '0 0 calc(' + pct + '% - ' + (20 * (spv - 1) / spv) + 'px)';
-          sl.style.minWidth = sl.style.flex;
+          if (spv === 1) {
+            sl.style.flex = '0 0 100%';
+            sl.style.minWidth = '100%';
+          } else {
+            var pct = (100 / spv) - 1.5;
+            sl.style.flex = '0 0 calc(' + pct + '% - ' + (20 * (spv - 1) / spv) + 'px)';
+            sl.style.minWidth = sl.style.flex;
+          }
         });
         var max = Math.max(0, destSlides.length - spv);
         destCurrent = Math.max(0, Math.min(index, max));

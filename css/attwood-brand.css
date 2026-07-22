@@ -1435,7 +1435,7 @@ figcaption {
        7. COUNTER SECTION
        ============================================================ */
     .aw-counter-section {
-      background-image: url('oldattwood/img/story-bg.jpg');
+      background-image: url('../oldattwood/img/story-bg.jpg');
       background-size: cover; background-position: center;
       background-attachment: fixed;
       position: relative; padding: 80px 0;
@@ -1459,7 +1459,7 @@ figcaption {
        ============================================================ */
     .aw-why-section { 
       padding: 70px 0; 
-      background: #faf8f4 url('oldattwood/img/slider/slide2.jpg') no-repeat center center;
+      background: #faf8f4 url('../oldattwood/img/slider/slide2.jpg') no-repeat center center;
       background-size: cover;
       position: relative;
     }
