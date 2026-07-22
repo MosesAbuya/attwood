@@ -78,10 +78,10 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 	 * @var array[]
 	 */
 	private const REMOVE_FROM_ALL_VERSIONS = [
-		'files'   => [
+		'files' => [
 			JPATH_ADMINISTRATOR . '/components/com_akeebabackup/src/Model/UsageStatisticsModel.php',
 
-			// Remove iDriveSync — the service has been discontinued
+			// Remove iDriveSync   the service has been discontinued
 			JPATH_ADMINISTRATOR . 'administrator/components/com_akeebabackup/engine/Postproc/idrivesync.json',
 			JPATH_ADMINISTRATOR . 'administrator/components/com_akeebabackup/engine/Postproc/Idrivesync.php',
 			JPATH_ADMINISTRATOR . 'administrator/components/com_akeebabackup/engine/Postproc/Connector/Idrivesync.php',
@@ -117,7 +117,7 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 	 * @var array[]
 	 */
 	private const REMOVE_FROM_CORE = [
-		'files'   => [
+		'files' => [
 			// Pro engine features
 			JPATH_ADMINISTRATOR . '/components/com_akeebabackup/engine/Archiver/Directftp.php',
 			JPATH_ADMINISTRATOR . '/components/com_akeebabackup/engine/Archiver/directftp.json',
@@ -225,14 +225,14 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 			JPATH_ADMINISTRATOR . '/components/com_akeebabackup/platform/Joomla/Filter/Plugins.php',
 			JPATH_ADMINISTRATOR . '/components/com_akeebabackup/platform/Joomla/Filter/Templates.php',
 
-			// Pro features: integrated restoration — Should be removed by Joomla itself
+			// Pro features: integrated restoration   Should be removed by Joomla itself
 			// JPATH_ADMINISTRATOR . '/components/com_akeebabackup/restore.php',
 		],
 		'folders' => [
-			// Pro features: API application — Should be removed by Joomla itself
+			// Pro features: API application   Should be removed by Joomla itself
 			// JPATH_API . '/components/com_akeebabackup',
 
-			// Pro features: ALICE — Should be removed by Joomla itself
+			// Pro features: ALICE   Should be removed by Joomla itself
 			// JPATH_ADMINISTRATOR . '/components/com_akeebabackup/AliceChecks',
 
 			// Pro features: Joomla CLI integration
@@ -270,10 +270,10 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 			JPATH_ADMINISTRATOR . '/components/com_akeebabackup/platform/Joomla/Config/Pro',
 			JPATH_ADMINISTRATOR . '/components/com_akeebabackup/platform/Joomla/Finalization',
 
-			// Pro features: Frontend controllers — Should be removed by Joomla itself
+			// Pro features: Frontend controllers   Should be removed by Joomla itself
 			// JPATH_SITE . '/src/Controller',
 
-			// Pro features: Frontend models — Should be removed by Joomla itself
+			// Pro features: Frontend models   Should be removed by Joomla itself
 			// JPATH_SITE . '/src/Model',
 		],
 	];
@@ -338,14 +338,11 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 	public function init()
 	{
 		// Find out the common extensions
-		if ($this->isSamePackage())
-		{
+		if ($this->isSamePackage()) {
 			$this->extensionsList = $this->getExtensionsFromPackage(self::PACKAGE_NAME);
-		}
-		else
-		{
-			$oldExtensions        = $this->getExtensionsFromPackage(self::OLD_PACKAGE_NAME);
-			$newExtensions        = $this->getExtensionsFromPackage(self::PACKAGE_NAME);
+		} else {
+			$oldExtensions = $this->getExtensionsFromPackage(self::OLD_PACKAGE_NAME);
+			$newExtensions = $this->getExtensionsFromPackage(self::PACKAGE_NAME);
 			$this->extensionsList = array_intersect($newExtensions, $oldExtensions);
 		}
 
@@ -364,8 +361,7 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 	 */
 	public function postflight(string $type, ?PackageAdapter $parent = null): bool
 	{
-		switch ($type)
-		{
+		switch ($type) {
 			// Brand new installation (regular or through Discover)
 			case 'install':
 			case 'discover_install':
@@ -416,21 +412,15 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 	{
 		$result = [];
 
-		foreach ($this->customHandlers as $adapter)
-		{
-			if (!method_exists($adapter, $eventName))
-			{
+		foreach ($this->customHandlers as $adapter) {
+			if (!method_exists($adapter, $eventName)) {
 				continue;
 			}
 
-			try
-			{
+			try {
 				$result[] = $adapter->{$eventName}(...$arguments);
-			}
-			catch (Throwable $e)
-			{
-				if (defined('JDEBUG') && JDEBUG)
-				{
+			} catch (Throwable $e) {
+				if (defined('JDEBUG') && JDEBUG) {
 					Factory::getApplication()->enqueueMessage($e->getMessage());
 				}
 			}
@@ -450,8 +440,7 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 	 */
 	public function getExtensionId(string $extension): ?int
 	{
-		if (isset($this->extensionIds[$extension]))
-		{
+		if (isset($this->extensionIds[$extension])) {
 			return $this->extensionIds[$extension];
 		}
 
@@ -459,18 +448,16 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 
 		$criteria = $this->extensionNameToCriteria($extension);
 
-		if (empty($criteria))
-		{
+		if (empty($criteria)) {
 			return $this->extensionIds[$extension];
 		}
 
-		$db    = $this->getDatabase();
+		$db = $this->getDatabase();
 		$query = $db->getQuery(true)
-		            ->select($db->quoteName('extension_id'))
-		            ->from($db->quoteName('#__extensions'));
+			->select($db->quoteName('extension_id'))
+			->from($db->quoteName('#__extensions'));
 
-		foreach ($criteria as $key => $value)
-		{
+		foreach ($criteria as $key => $value) {
 			$type = is_numeric($value) ? ParameterType::INTEGER : ParameterType::STRING;
 			$type = is_bool($value) ? ParameterType::BOOLEAN : $type;
 			$type = is_null($value) ? ParameterType::NULL : $type;
@@ -480,19 +467,16 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 			 * $value variable is overwritten in the next foreach() iteration, therefore all criteria values will be
 			 * equal to the last value iterated. Groan...
 			 */
-			$varName    = 'queryParam' . ucfirst($key);
+			$varName = 'queryParam' . ucfirst($key);
 			${$varName} = $value;
 
 			$query->where($db->qn($key) . ' = :' . $key)
-			      ->bind(':' . $key, ${$varName}, $type);
+				->bind(':' . $key, ${$varName}, $type);
 		}
 
-		try
-		{
+		try {
 			$this->extensionIds[$extension] = (int) $db->setQuery($query)->loadResult();
-		}
-		catch (RuntimeException $e)
-		{
+		} catch (RuntimeException $e) {
 			return null;
 		}
 
@@ -513,8 +497,7 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 		// Get the extension ID of the new package
 		$newPackageId = $this->getExtensionId(self::PACKAGE_NAME);
 
-		if (empty($newPackageId))
-		{
+		if (empty($newPackageId)) {
 			return;
 		}
 
@@ -524,8 +507,7 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 			return !empty($x);
 		});
 
-		if (empty($extensionIDs))
-		{
+		if (empty($extensionIDs)) {
 			return;
 		}
 
@@ -536,12 +518,12 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 		$extensionIDs = array_merge($extensionIDs);
 
 		// Reassign all extensions
-		$db    = $this->getDatabase();
+		$db = $this->getDatabase();
 		$query = $db->getQuery(true)
-		            ->update($db->quoteName('#__extensions'))
-		            ->set($db->qn('package_id') . ' = :package_id')
-		            ->whereIn($db->qn('extension_id'), $extensionIDs, ParameterType::INTEGER)
-		            ->bind(':package_id', $newPackageId, ParameterType::INTEGER);
+			->update($db->quoteName('#__extensions'))
+			->set($db->qn('package_id') . ' = :package_id')
+			->whereIn($db->qn('extension_id'), $extensionIDs, ParameterType::INTEGER)
+			->bind(':package_id', $newPackageId, ParameterType::INTEGER);
 		$db->setQuery($query)->execute();
 	}
 
@@ -568,16 +550,14 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 	 */
 	protected function upgradeFromOldPackage(): void
 	{
-		if ($this->isSamePackage())
-		{
+		if ($this->isSamePackage()) {
 			$this->unregisterFromFOF('3');
 			$this->unregisterFromFOF('4');
 
 			return;
 		}
 
-		if (!$this->hasOldPackage())
-		{
+		if (!$this->hasOldPackage()) {
 			return;
 		}
 
@@ -598,27 +578,23 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 	protected function publishExtensionsOnInstall(?array $extensionsList = null): void
 	{
 		$extensionsList = $extensionsList ?? self::ENABLE_EXTENSIONS;
-		$extensionIDs   = array_map([$this, 'getExtensionId'], $extensionsList);
-		$extensionIDs   = array_filter($extensionIDs, function ($x) {
+		$extensionIDs = array_map([$this, 'getExtensionId'], $extensionsList);
+		$extensionIDs = array_filter($extensionIDs, function ($x) {
 			return !empty($x);
 		});
 
-		if (empty($extensionIDs))
-		{
+		if (empty($extensionIDs)) {
 			return;
 		}
 
-		$db    = $this->getDatabase();
+		$db = $this->getDatabase();
 		$query = $db->getQuery(true)
-		            ->update($db->quoteName('#__extensions'))
-		            ->set($db->qn('enabled') . ' = 1')
-		            ->whereIn($db->quoteName('extension_id'), $extensionIDs);
-		try
-		{
+			->update($db->quoteName('#__extensions'))
+			->set($db->qn('enabled') . ' = 1')
+			->whereIn($db->quoteName('extension_id'), $extensionIDs);
+		try {
 			$db->setQuery($query)->execute();
-		}
-		catch (RuntimeException $e)
-		{
+		} catch (RuntimeException $e) {
 			return;
 		}
 	}
@@ -641,19 +617,16 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 	{
 		// We will definitely remove REMOVE_FROM_ALL_VERSIONS in all versions
 		$removeSource = self::REMOVE_FROM_ALL_VERSIONS;
-		$isPro        = $isPro ?? $this->isPro();
+		$isPro = $isPro ?? $this->isPro();
 
-		if (!$isPro)
-		{
-			$removeSource['files']   = array_merge($removeSource['files'], self::REMOVE_FROM_CORE['files']);
+		if (!$isPro) {
+			$removeSource['files'] = array_merge($removeSource['files'], self::REMOVE_FROM_CORE['files']);
 			$removeSource['folders'] = array_merge($removeSource['folders'], self::REMOVE_FROM_CORE['folders']);
 		}
 
 		// Remove files
-		foreach ($removeSource['files'] as $file)
-		{
-			if (!is_file($file))
-			{
+		foreach ($removeSource['files'] as $file) {
+			if (!is_file($file)) {
 				continue;
 			}
 
@@ -661,8 +634,7 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 		}
 
 		// Remove folders
-		foreach ($removeSource['folders'] as $folder)
-		{
+		foreach ($removeSource['folders'] as $folder) {
 			$this->deleteFolder($folder);
 		}
 	}
@@ -676,8 +648,7 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 	protected function uninstallExtensions(): void
 	{
 		// Tell Joomla to uninstall the extensions always meant to be removed.
-		foreach (self::REMOVE_EXTENSIONS as $extension)
-		{
+		foreach (self::REMOVE_EXTENSIONS as $extension) {
 			$this->uninstallExtension($extension);
 		}
 	}
@@ -691,14 +662,12 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 	protected function uninstallProExtensions(): void
 	{
 		// If it's the Pro version we don't uninstall anything.
-		if ($this->isPro())
-		{
+		if ($this->isPro()) {
 			return;
 		}
 
 		// Tell Joomla to uninstall the Pro-only extensions.
-		foreach (self::PRO_ONLY_EXTENSIONS as $extension)
-		{
+		foreach (self::PRO_ONLY_EXTENSIONS as $extension) {
 			$this->uninstallExtension($extension);
 		}
 	}
@@ -708,33 +677,30 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 		// If the folder does not exist in the requested form return early.
 		$hasMixedCase = is_dir($path);
 
-		if (!$hasMixedCase)
-		{
+		if (!$hasMixedCase) {
 			return false;
 		}
 
 		// If the folder is all lowercase return early.
-		$baseName          = basename($path);
+		$baseName = basename($path);
 		$lowercaseBaseName = strtolower($baseName);
 
-		if ($baseName === $lowercaseBaseName)
-		{
+		if ($baseName === $lowercaseBaseName) {
 			return $hasMixedCase && Folder::delete($path);
 		}
 
 		// We have a mixed case folder. Further investigation necessary.
-		$altPath      = dirname($path) . '/' . $lowercaseBaseName;
+		$altPath = dirname($path) . '/' . $lowercaseBaseName;
 		$hasLowercase = is_dir($altPath);
 
 		// If the lowercase path does not exist we have a case-sensitive filesystem. Return early.
-		if (!$hasLowercase)
-		{
+		if (!$hasLowercase) {
 			return $hasMixedCase && Folder::delete($path);
 		}
 
 		// Both folders exist. Are they the same?
-		$testBasename      = UserHelper::genRandomPassword(8) . '.dat';
-		$data              = UserHelper::genRandomPassword(32);
+		$testBasename = UserHelper::genRandomPassword(8) . '.dat';
+		$data = UserHelper::genRandomPassword(32);
 		$lowercaseTestFile = $altPath . '/' . $testBasename;
 		$uppercaseTestFile = $path . '/' . $testBasename;
 
@@ -745,8 +711,7 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 		File::delete($lowercaseTestFile);
 
 		// The two folders are different. We have a case-sensitive filesystem. Proceed with deletion.
-		if ($readData !== $data)
-		{
+		if ($readData !== $data) {
 			return Folder::delete($path);
 		}
 
@@ -759,7 +724,7 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 		 * filesystem...
 		 */
 		$intermediateBasename = $lowercaseBaseName . '_' . UserHelper::genRandomPassword(8);
-		$intermediatePath     = dirname($path) . '/' . $intermediateBasename;
+		$intermediatePath = dirname($path) . '/' . $intermediateBasename;
 
 		Folder::move($path, $intermediatePath);
 		Folder::move($intermediatePath, $altPath);
@@ -776,14 +741,10 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 	 */
 	private function runIsolated(array $methodNames): void
 	{
-		foreach ($methodNames as $methodName)
-		{
-			try
-			{
+		foreach ($methodNames as $methodName) {
+			try {
 				$this->{$methodName}();
-			}
-			catch (Throwable $e)
-			{
+			} catch (Throwable $e) {
 				// No problem, let's move on.
 			}
 		}
@@ -796,8 +757,7 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 	 */
 	private function hasOldPackage(): bool
 	{
-		if (empty(self::OLD_PACKAGE_NAME))
-		{
+		if (empty(self::OLD_PACKAGE_NAME)) {
 			return false;
 		}
 
@@ -820,8 +780,7 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 		// Get the extension ID of the new package
 		$newPackageId = $this->getExtensionId(self::PACKAGE_NAME);
 
-		if (empty($newPackageId))
-		{
+		if (empty($newPackageId)) {
 			return;
 		}
 
@@ -831,8 +790,7 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 			return !empty($x);
 		});
 
-		if (empty($extensionIDs))
-		{
+		if (empty($extensionIDs)) {
 			return;
 		}
 
@@ -843,12 +801,12 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 		$extensionIDs = array_merge($extensionIDs);
 
 		// Reassign all extensions
-		$db    = $this->getDatabase();
+		$db = $this->getDatabase();
 		$query = $db->getQuery(true)
-		            ->update($db->quoteName('#__extensions'))
-		            ->set($db->qn('package_id') . ' = :package_id')
-		            ->whereIn($db->qn('extension_id'), $extensionIDs, ParameterType::INTEGER)
-		            ->bind(':package_id', $newPackageId, ParameterType::INTEGER);
+			->update($db->quoteName('#__extensions'))
+			->set($db->qn('package_id') . ' = :package_id')
+			->whereIn($db->qn('extension_id'), $extensionIDs, ParameterType::INTEGER)
+			->bind(':package_id', $newPackageId, ParameterType::INTEGER);
 		$db->setQuery($query)->execute();
 	}
 
@@ -864,8 +822,7 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 		// Make sure we have an extensions list and it's canonical (admin modules have mod_ prefix, not amod_).
 		$extensions = $this->extensionsList;
 		$extensions = array_map(function ($name) {
-			if (substr($name, 0, 5) == 'amod_')
-			{
+			if (substr($name, 0, 5) == 'amod_') {
 				$name = 'mod_' . substr($name, 5);
 			}
 
@@ -874,25 +831,21 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 
 		// Get the existing list of extensions dependent on the specified version of FOF.
 		$keyName = 'fof' . $fofVersion . '0';
-		$db      = $this->getDatabase();
-		$query   = $db->getQuery(true)
-		              ->select($db->quoteName('value'))
-		              ->from($db->quoteName('#__akeeba_common'))
-		              ->where($db->quoteName('key') . ' = :keyName')
-		              ->bind(':keyName', $keyName);
-		try
-		{
+		$db = $this->getDatabase();
+		$query = $db->getQuery(true)
+			->select($db->quoteName('value'))
+			->from($db->quoteName('#__akeeba_common'))
+			->where($db->quoteName('key') . ' = :keyName')
+			->bind(':keyName', $keyName);
+		try {
 			$json = $db->setQuery($query)->loadResult();
 			$list = ($json === null) ? [] : json_decode($json, true);
-		}
-		catch (RuntimeException $e)
-		{
+		} catch (RuntimeException $e) {
 			return;
 		}
 
 		// If the list is empty I am already done.
-		if (is_null($list) || !is_array($list))
-		{
+		if (is_null($list) || !is_array($list)) {
 			return;
 		}
 
@@ -902,18 +855,15 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 
 		// Update the #__akeeba_common table.
 		$query = $db->getQuery(true)
-		            ->update($db->quoteName('#__akeeba_common'))
-		            ->set($db->quoteName('value') . ' = :json')
-		            ->where($db->quoteName('key') . ' = :keyName')
-		            ->bind(':json', $json)
-		            ->bind(':keyName', $keyName);
+			->update($db->quoteName('#__akeeba_common'))
+			->set($db->quoteName('value') . ' = :json')
+			->where($db->quoteName('key') . ' = :keyName')
+			->bind(':json', $json)
+			->bind(':keyName', $keyName);
 
-		try
-		{
+		try {
 			$db->setQuery($query)->execute();
-		}
-		catch (RuntimeException $e)
-		{
+		} catch (RuntimeException $e) {
 			return;
 		}
 	}
@@ -932,26 +882,22 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 		$oldPackage = self::OLD_PACKAGE_NAME;
 		$extensions = $this->extensionsList;
 
-		if (empty($oldPackage) || empty($extensions))
-		{
+		if (empty($oldPackage) || empty($extensions)) {
 			return;
 		}
 
 		// Get the cached manifest as a SimpleXMLElement node
 		$xml = $this->getPackageXMLManifest($oldPackage);
 
-		if (is_null($xml))
-		{
+		if (is_null($xml)) {
 			return;
 		}
 
 		// Walk through all the <file> tags and remove the extensions in the $extensions list
-		foreach ($xml->xpath('//files/file') as $fileField)
-		{
+		foreach ($xml->xpath('//files/file') as $fileField) {
 			$extension = $this->xmlNodeToExtensionName($fileField);
 
-			if (is_null($extension) || !in_array($extension, $extensions))
-			{
+			if (is_null($extension) || !in_array($extension, $extensions)) {
 				continue;
 			}
 
@@ -976,15 +922,13 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 	{
 		$filePath = $this->getCachedManifestPath($package);
 
-		if (!@file_exists($filePath) || !@is_readable($filePath))
-		{
+		if (!@file_exists($filePath) || !@is_readable($filePath)) {
 			return null;
 		}
 
 		$xmlContent = @file_get_contents($filePath);
 
-		if (empty($xmlContent))
-		{
+		if (empty($xmlContent)) {
 			return null;
 		}
 
@@ -1001,19 +945,16 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 	private function getExtensionsFromPackage(string $package): array
 	{
 		$extensions = [];
-		$xml        = $this->getPackageXMLManifest($package);
+		$xml = $this->getPackageXMLManifest($package);
 
-		if (is_null($xml))
-		{
+		if (is_null($xml)) {
 			return $extensions;
 		}
 
-		foreach ($xml->xpath('//files/file') as $fileField)
-		{
+		foreach ($xml->xpath('//files/file') as $fileField) {
 			$extension = $this->xmlNodeToExtensionName($fileField);
 
-			if (is_null($extension))
-			{
+			if (is_null($extension)) {
 				continue;
 			}
 
@@ -1033,10 +974,9 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 	private function xmlNodeToExtensionName(SimpleXMLElement $fileField): ?string
 	{
 		$type = (string) $fileField->attributes()->type;
-		$id   = (string) $fileField->attributes()->id;
+		$id = (string) $fileField->attributes()->id;
 
-		switch ($type)
-		{
+		switch ($type) {
 			case 'component':
 			case 'file':
 			case 'library':
@@ -1044,12 +984,12 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 				break;
 
 			case 'plugin':
-				$group     = (string) $fileField->attributes()->group ?? 'system';
+				$group = (string) $fileField->attributes()->group ?? 'system';
 				$extension = 'plg_' . $group . '_' . $id;
 				break;
 
 			case 'module':
-				$client    = (string) $fileField->attributes()->client ?? 'site';
+				$client = (string) $fileField->attributes()->client ?? 'site';
 				$extension = (($client != 'site') ? 'a' : '') . $id;
 				break;
 
@@ -1081,51 +1021,50 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 	{
 		$parts = explode('_', $extensionName, 3);
 
-		switch ($parts[0])
-		{
+		switch ($parts[0]) {
 			case 'pkg':
 				return [
-					'type'    => 'package',
+					'type' => 'package',
 					'element' => $extensionName,
 				];
 
 			case 'com':
 				return [
-					'type'    => 'component',
+					'type' => 'component',
 					'element' => $extensionName,
 				];
 
 			case 'plg':
 				return [
-					'type'    => 'plugin',
-					'folder'  => $parts[1],
+					'type' => 'plugin',
+					'folder' => $parts[1],
 					'element' => $parts[2],
 				];
 
 			case 'mod':
 				return [
-					'type'      => 'module',
-					'element'   => $extensionName,
+					'type' => 'module',
+					'element' => $extensionName,
 					'client_id' => 0,
 				];
 
 			// That's how we note admin modules
 			case 'amod':
 				return [
-					'type'      => 'module',
-					'element'   => substr($extensionName, 1),
+					'type' => 'module',
+					'element' => substr($extensionName, 1),
 					'client_id' => 1,
 				];
 
 			case 'file':
 				return [
-					'type'    => 'file',
+					'type' => 'file',
 					'element' => $extensionName,
 				];
 
 			case 'lib':
 				return [
-					'type'    => 'library',
+					'type' => 'library',
 					'element' => $parts[1],
 				];
 		}
@@ -1155,41 +1094,34 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 	 */
 	private function isPro(): bool
 	{
-		if (empty(self::PRO_CRITERIA))
-		{
+		if (empty(self::PRO_CRITERIA)) {
 			return false;
 		}
 
-		foreach (self::PRO_CRITERIA as $criterion)
-		{
+		foreach (self::PRO_CRITERIA as $criterion) {
 			[$type, $value] = $criterion;
 
-			switch ($type)
-			{
+			switch ($type) {
 				case 'const':
 				case 'constant':
-					if (!defined($value))
-					{
+					if (!defined($value)) {
 						continue 2;
 					}
 
-					if (constant($value))
-					{
+					if (constant($value)) {
 						return true;
 					}
 
 					break;
 
 				case 'folder':
-					if (@file_exists($value) && @is_dir($value))
-					{
+					if (@file_exists($value) && @is_dir($value)) {
 						return true;
 					}
 					break;
 
 				case 'file':
-					if (@file_exists($value) && @is_file($value))
-					{
+					if (@file_exists($value) && @is_file($value)) {
 						return true;
 					}
 					break;
@@ -1214,8 +1146,7 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 		// Let's get the extension ID. If it's not there we can't uninstall this extension, right..?
 		$eid = $this->getExtensionId($extension);
 
-		if (empty($eid))
-		{
+		if (empty($eid)) {
 			return false;
 		}
 
@@ -1223,43 +1154,34 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 		$this->removeExtensionPackageLink($eid);
 
 		// Get an Extension table object and Installer object.
-		$row       = new Extension($this->getDatabase());
+		$row = new Extension($this->getDatabase());
 		$installer = Installer::getInstance();
 
 		// Load the extension row or fail the uninstallation immediately.
-		try
-		{
-			if (!$row->load($eid))
-			{
+		try {
+			if (!$row->load($eid)) {
 				return false;
 			}
-		}
-		catch (Throwable $e)
-		{
+		} catch (Throwable $e) {
 			// If the database query fails or Joomla experiences an unplanned rapid deconstruction let's bail out.
 			return false;
 		}
 
 		// Can't uninstalled protected extensions
 		/** @noinspection PhpUndefinedFieldInspection */
-		if ((int) $row->locked === 1)
-		{
+		if ((int) $row->locked === 1) {
 			return false;
 		}
 
 		// An extension row without a type? What have you done to your database, you MONSTER?!
-		if (empty($row->type))
-		{
+		if (empty($row->type)) {
 			return false;
 		}
 
 		// Do the actual uninstallation. Try to trap any errors, just in case...
-		try
-		{
+		try {
 			return $installer->uninstall($row->type, $eid);
-		}
-		catch (Throwable $e)
-		{
+		} catch (Throwable $e) {
 			return false;
 		}
 	}
@@ -1278,30 +1200,26 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 		// Scan the directory and load the custom handlers
 		$targetDirectory = __DIR__ . '/' . self::CUSTOM_HANDLERS_DIRECTORY;
 
-		if (!@file_exists($targetDirectory) || !@is_dir($targetDirectory))
-		{
+		if (!@file_exists($targetDirectory) || !@is_dir($targetDirectory)) {
 			return;
 		}
 
 		$di = new DirectoryIterator($targetDirectory);
 
 		/** @var DirectoryIterator $entry */
-		foreach ($di as $entry)
-		{
+		foreach ($di as $entry) {
 			// Ignore folders
-			if ($entry->isDot() || $entry->isDir())
-			{
+			if ($entry->isDot() || $entry->isDir()) {
 				continue;
 			}
 
 			// Ignore non-PHP directories
-			if ($entry->getExtension() != 'php')
-			{
+			if ($entry->getExtension() != 'php') {
 				continue;
 			}
 
 			// Get the class name
-			$bareName          = basename($entry->getFilename(), '.php');
+			$bareName = basename($entry->getFilename(), '.php');
 			$bareNameCanonical = preg_replace('/[^A-Z_]/i', '', $bareName);
 
 			/**
@@ -1309,14 +1227,12 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 			 * the bare class name would be "FooBar" but the canonical would be "FooBar" vs "FooBar.01". This check
 			 * makes sure that renamed files will NOT be loaded. Ever.
 			 */
-			if ($bareName != $bareNameCanonical)
-			{
+			if ($bareName != $bareNameCanonical) {
 				continue;
 			}
 
 			// Have I already loaded an object this class? Yeah, sometimes hosts do weird(er) things.
-			if (array_key_exists($bareNameCanonical, $this->customHandlers))
-			{
+			if (array_key_exists($bareNameCanonical, $this->customHandlers)) {
 				continue;
 			}
 
@@ -1326,8 +1242,7 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 			// Make sure we actually loaded a class I can use
 			$classFQN = $handlerNamespace . '\\' . $bareNameCanonical;
 
-			if (!class_exists($classFQN, false))
-			{
+			if (!class_exists($classFQN, false)) {
 				continue;
 			}
 
@@ -1350,7 +1265,7 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 
 	private function removeExtensionPackageLink(int $eid): void
 	{
-		$db    = $this->getDatabase();
+		$db = $this->getDatabase();
 		$query = $db->getQuery(true)
 			->update($db->quoteName('#__extensions'))
 			->set($db->quoteName('package_id') . ' = 0')

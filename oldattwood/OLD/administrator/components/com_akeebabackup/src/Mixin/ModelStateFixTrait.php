@@ -23,7 +23,7 @@ trait ModelStateFixTrait
 	 * Calling setState on a model does NOT set the __state_set flag. Next time you call getState the model will always
 	 * go through populateState(). However, Joomla's default populateState for ListModel and AdminModel tries to call
 	 * the getUserStateFromRequest method against the application object **without** checking if this method exists.
-	 * This method does not, in fact, exist in the Console application — it only exists in the site, administrator and
+	 * This method does not, in fact, exist in the Console application   it only exists in the site, administrator and
 	 * cli applications. As a result trying to use a model in the Console application breaks.
 	 *
 	 * The solution is this one–line method which sets the __state_set flag, preventing Joomla from sabotaging itself.

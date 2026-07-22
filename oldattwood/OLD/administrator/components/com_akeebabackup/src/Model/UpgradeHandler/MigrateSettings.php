@@ -56,7 +56,7 @@ class MigrateSettings
 	public function __construct(UpgradeModel $upgradeModel, DatabaseDriver $dbo)
 	{
 		$this->upgradeModel = $upgradeModel;
-		$this->dbo          = $dbo;
+		$this->dbo = $dbo;
 	}
 
 	/**
@@ -69,9 +69,9 @@ class MigrateSettings
 	 */
 	public function onNeedsMigration(): bool
 	{
-		$cParams         = ComponentHelper::getParams('com_akeebabackup');
+		$cParams = ComponentHelper::getParams('com_akeebabackup');
 		$alreadyMigrated = $cParams->get('migrated_from_pkg_akeeba', 0) == 1;
-		$hasPkgAkeeba    = !empty($this->upgradeModel->getExtensionId('com_akeeba'));
+		$hasPkgAkeeba = !empty($this->upgradeModel->getExtensionId('com_akeeba'));
 
 		return $hasPkgAkeeba && !$alreadyMigrated;
 	}
@@ -91,60 +91,50 @@ class MigrateSettings
 		// Get the extension ID for com_akeeba
 		$eid = $this->upgradeModel->getExtensionId('com_akeeba');
 
-		if (empty($eid))
-		{
+		if (empty($eid)) {
 			return false;
 		}
 
 		// Get the cached manifest of the old component (com_akeeba)
-		$db    = $this->dbo;
+		$db = $this->dbo;
 		$query = $db->getQuery(true)
-		            ->select([
-			            $db->quoteName('manifest_cache'),
-		            ])
-		            ->from($db->quoteName('#__extensions'))
-		            ->where($db->quoteName('type') . ' = ' . $db->quote('component'))
-		            ->where($db->quoteName('element') . ' = ' . $db->quote('com_akeeba'));
+			->select([
+				$db->quoteName('manifest_cache'),
+			])
+			->from($db->quoteName('#__extensions'))
+			->where($db->quoteName('type') . ' = ' . $db->quote('component'))
+			->where($db->quoteName('element') . ' = ' . $db->quote('com_akeeba'));
 
-		try
-		{
+		try {
 			$manifestCacheJson = $db->setQuery($query)->loadResult();
-		}
-		catch (Exception $e)
-		{
+		} catch (Exception $e) {
 			return false;
 		}
 
 		// JSON decode the manifest
 		$manifest = @json_decode($manifestCacheJson, true);
 
-		if (empty($manifest))
-		{
+		if (empty($manifest)) {
 			return false;
 		}
 
 		// Get the creation date and version
 		$creationDate = $manifest['creationDate'];
-		$version      = $manifest['version'];
+		$version = $manifest['version'];
 
 		// If it's version 7.0.0 or later we're golden.
-		if (version_compare($version, '7.0.0', 'ge'))
-		{
+		if (version_compare($version, '7.0.0', 'ge')) {
 			return true;
 		}
 
-		try
-		{
+		try {
 			$date = clone JoomlaFactory::getDate($creationDate);
-		}
-		catch (Exception $e)
-		{
+		} catch (Exception $e) {
 			return false;
 		}
 
 		// If we have a dev release it must be published after January 1st, 2020, i.e. the year must be 2020 or later.
-		if ($date->year >= 2020)
-		{
+		if ($date->year >= 2020) {
 			return true;
 		}
 
@@ -178,10 +168,9 @@ class MigrateSettings
 	private function migrateComponentOptions(): void
 	{
 		$oldParams = ComponentHelper::getParams('com_akeeba');
-		$cParams   = ComponentHelper::getParams('com_akeebabackup');
+		$cParams = ComponentHelper::getParams('com_akeebabackup');
 
-		foreach ($oldParams->getIterator() as $key => $value)
-		{
+		foreach ($oldParams->getIterator() as $key => $value) {
 			$cParams->set($key, $value);
 		}
 
@@ -204,8 +193,7 @@ class MigrateSettings
 		$oldKey = JPATH_ADMINISTRATOR . '/components/com_akeeba/BackupEngine/serverkey.php';
 		$newKey = JPATH_ADMINISTRATOR . '/components/com_akeebabackup/engine/serverkey.php';
 
-		if (!@file_exists($oldKey) || !@is_file($oldKey) || !@is_readable($oldKey))
-		{
+		if (!@file_exists($oldKey) || !@is_file($oldKey) || !@is_readable($oldKey)) {
 			return;
 		}
 
@@ -223,24 +211,22 @@ class MigrateSettings
 		// First, we will mass-migrate the data
 		$tableMap = [
 			'#__ak_profiles' => '#__akeebabackup_profiles',
-			'#__ak_stats'    => '#__akeebabackup_backups',
-			'#__ak_storage'  => '#__akeebabackup_storage',
+			'#__ak_stats' => '#__akeebabackup_backups',
+			'#__ak_storage' => '#__akeebabackup_storage',
 		];
 
 		$this->dbo->transactionStart();
 
-		foreach ($tableMap as $oldTable => $newTable)
-		{
+		foreach ($tableMap as $oldTable => $newTable) {
 			// Remove all data from the existing table
 			$this->dbo->truncateTable($newTable);
 
 			// Create and run an INSERT INTO ... SELECT query to make the migrate run as fast as possible.
 			$outerQuery = $this->dbo->getQuery(true)
-			                        ->select('*')
-			                        ->from($this->dbo->quoteName($oldTable));
+				->select('*')
+				->from($this->dbo->quoteName($oldTable));
 
-			if ($oldTable === '#__ak_profiles')
-			{
+			if ($oldTable === '#__ak_profiles') {
 				$outerQuery->select('1 AS ' . $this->dbo->quoteName('access'));
 			}
 
@@ -249,12 +235,9 @@ class MigrateSettings
 			$this->dbo->setQuery($innerQuery)->execute();
 		}
 
-		try
-		{
+		try {
 			$this->dbo->transactionCommit();
-		}
-		catch (Exception $e)
-		{
+		} catch (Exception $e) {
 		}
 	}
 
@@ -266,65 +249,55 @@ class MigrateSettings
 		// STEP 0 - Load the migrated server key using our neat in-memory patching trick. We'll need it in step 1 below.
 		$this->reloadEncryptionKey();
 
-		// STEP 1 — Replace com_akeeba to com_akeebabackup in the absolute output directory path of each backup profile.
-		foreach ($this->getBackupProfileIDs() as $profile)
-		{
+		// STEP 1   Replace com_akeeba to com_akeebabackup in the absolute output directory path of each backup profile.
+		foreach ($this->getBackupProfileIDs() as $profile) {
 			// Load the profile configuration
-			try
-			{
+			try {
 				Platform::getInstance()->load_configuration($profile);
 				$config = Factory::getConfiguration();
-			}
-			catch (Throwable $e)
-			{
+			} catch (Throwable $e) {
 				// Your database is broken :(
 				continue;
 			}
 
 			$outputDirectory = $config->get('akeeba.basic.output_directory', '[DEFAULT_OUTPUT]');
 
-			if (strpos($outputDirectory, $oldFolder) === false)
-			{
+			if (strpos($outputDirectory, $oldFolder) === false) {
 				continue;
 			}
 
 			$outputDirectory = str_replace($oldFolder, $newFolder, $outputDirectory);
 
-			try
-			{
+			try {
 				Platform::getInstance()->save_configuration($profile);
-			}
-			catch (Throwable $e)
-			{
+			} catch (Throwable $e) {
 				// Your database is broken!
 				continue;
 			}
 		}
 
-		// STEP 2 — Replace com_akeeba to com_akeebabackup in the absolute file path of every backup record.
-		$db    = $this->dbo;
+		// STEP 2   Replace com_akeeba to com_akeebabackup in the absolute file path of every backup record.
+		$db = $this->dbo;
 		$query = $db->getQuery(true)
-		            ->update($db->quoteName('#__akeebabackup_backups'))
-		            ->set(
-			            $db->quoteName('absolute_path') . ' = REPLACE(' .
-			            $db->quoteName('absolute_path') . ', :find, :replace'
-			            . ')'
-		            )
-		            ->bind(':find', $oldFolder)
-		            ->bind(':replace', $newFolder);
+			->update($db->quoteName('#__akeebabackup_backups'))
+			->set(
+				$db->quoteName('absolute_path') . ' = REPLACE(' .
+				$db->quoteName('absolute_path') . ', :find, :replace'
+				. ')'
+			)
+			->bind(':find', $oldFolder)
+			->bind(':replace', $newFolder);
 		$db->setQuery($query)->execute();
 
-		// STEP 3 — Move all backup archives, log files and so on
+		// STEP 3   Move all backup archives, log files and so on
 		$sourceDir = JPATH_ADMINISTRATOR . '/' . $oldFolder;
-		$destDir   = JPATH_ADMINISTRATOR . '/' . $newFolder;
+		$destDir = JPATH_ADMINISTRATOR . '/' . $newFolder;
 
-		foreach (Folder::files($sourceDir) as $fileName)
-		{
+		foreach (Folder::files($sourceDir) as $fileName) {
 			$sourceFile = $sourceDir . '/' . $fileName;
-			$destFile   = $destDir . '/' . $fileName;
+			$destFile = $destDir . '/' . $fileName;
 
-			if (!@rename($sourceFile, $destFile))
-			{
+			if (!@rename($sourceFile, $destFile)) {
 				// File::move($sourceFile, $destFile);
 			}
 		}
@@ -341,8 +314,8 @@ class MigrateSettings
 		$db = $this->dbo;
 
 		$query = $db->getQuery(true)
-		            ->select($db->quoteName('id'))
-		            ->from($db->quoteName('#__akeebabackup_profiles'));
+			->select($db->quoteName('id'))
+			->from($db->quoteName('#__akeebabackup_profiles'));
 
 		$profiles = $db->setQuery($query)->loadColumn() ?: [];
 
@@ -351,11 +324,10 @@ class MigrateSettings
 
 	private function reloadEncryptionKey()
 	{
-		$newKey   = JPATH_ADMINISTRATOR . '/components/com_akeebabackup/engine/serverkey.php';
+		$newKey = JPATH_ADMINISTRATOR . '/components/com_akeebabackup/engine/serverkey.php';
 		$contents = @file_get_contents($newKey);
 
-		if ($contents === false)
-		{
+		if ($contents === false) {
 			return;
 		}
 
@@ -365,8 +337,7 @@ class MigrateSettings
 		file_put_contents('buffer://serverkey.php', $contents);
 		require_once 'buffer://serverkey.php';
 
-		if (!defined('AKEEBA_MIGRATED_SERVERKEY'))
-		{
+		if (!defined('AKEEBA_MIGRATED_SERVERKEY')) {
 			[$junk, $toProcess] = explode("'AKEEBA_MIGRATED_SERVERKEY',", $contents);
 			$toProcess = trim($toProcess, " \t\n;php?>)");
 			$toProcess = trim($toProcess, '\'');
@@ -375,8 +346,7 @@ class MigrateSettings
 
 		$key = @base64_decode(AKEEBA_MIGRATED_SERVERKEY);
 
-		if (empty($key))
-		{
+		if (empty($key)) {
 			return;
 		}
 
@@ -389,8 +359,7 @@ class MigrateSettings
 		$oldEid = $this->getExtensionId('pkg_akeeba', 'package', 0);
 		$newEid = $this->getExtensionId('pkg_akeebabackup', 'package', 0);
 
-		if (empty($oldEid) || empty($newEid))
-		{
+		if (empty($oldEid) || empty($newEid)) {
 			return;
 		}
 
@@ -398,22 +367,19 @@ class MigrateSettings
 		$newDLKey = $this->getDownloadKey($newEid);
 
 		// If I already have a key do nothing
-		if ($newDLKey['valid'])
-		{
+		if ($newDLKey['valid']) {
 			return;
 		}
 
 		// If the old version does not have a key or does not support keys the Joomla 4 fall back to component options
 		$dlid = $oldDLKey['value'] ?? null;
 
-		if (!$oldDLKey['valid'] || !$oldDLKey['supported'])
-		{
+		if (!$oldDLKey['valid'] || !$oldDLKey['supported']) {
 			$dlid = ComponentHelper::getParams('com_akeeba')->get('update_dlid', null);
 		}
 
 		// No Download ID to migrate? Okay, then.
-		if (empty($dlid))
-		{
+		if (empty($dlid)) {
 			return;
 		}
 
@@ -423,7 +389,7 @@ class MigrateSettings
 	private function getDownloadKey(int $extension_id): array
 	{
 		// Get the extension record
-		$db        = $this->dbo;
+		$db = $this->dbo;
 		$extension = new \Joomla\CMS\Table\Extension($db);
 		$extension->load($extension_id);
 
@@ -438,8 +404,7 @@ class MigrateSettings
 	{
 		$dlKeyInfo = $this->getDownloadKey($extension_id);
 
-		if (!($dlKeyInfo['supported'] ?? false))
-		{
+		if (!($dlKeyInfo['supported'] ?? false)) {
 			throw new RuntimeException('The extension does not support Download Keys');
 		}
 
@@ -450,61 +415,59 @@ class MigrateSettings
 
 	private function getExtraQuery(int $extension_id): ?string
 	{
-		$db    = $this->dbo;
+		$db = $this->dbo;
 		$query = $db->getQuery(true)
-		            ->select($db->quoteName('update_site_id'))
-		            ->from($db->quoteName('#__update_sites_extensions'))
-		            ->where($db->quoteName('extension_id') . ' = :eid')
-		            ->bind(':eid', $extension_id, ParameterType::INTEGER);
-		$usid  = $db->setQuery($query)->loadResult() ?: null;
+			->select($db->quoteName('update_site_id'))
+			->from($db->quoteName('#__update_sites_extensions'))
+			->where($db->quoteName('extension_id') . ' = :eid')
+			->bind(':eid', $extension_id, ParameterType::INTEGER);
+		$usid = $db->setQuery($query)->loadResult() ?: null;
 
-		if (empty($usid))
-		{
+		if (empty($usid)) {
 			return null;
 		}
 
 		$query = $db->getQuery(true)
-		            ->select($db->quoteName('extra_query'))
-		            ->from($db->quoteName('#__update_sites'))
-		            ->where($db->quoteName('update_site_id') . ' = :usid')
-		            ->bind(':usid', $usid, ParameterType::INTEGER);
+			->select($db->quoteName('extra_query'))
+			->from($db->quoteName('#__update_sites'))
+			->where($db->quoteName('update_site_id') . ' = :usid')
+			->bind(':usid', $usid, ParameterType::INTEGER);
 
 		return $db->setQuery($query)->loadResult() ?: null;
 	}
 
 	private function setExtraQuery(int $extension_id, ?string $extraQuery): void
 	{
-		$db    = $this->dbo;
+		$db = $this->dbo;
 		$query = $db->getQuery(true)
-		            ->select($db->quoteName('update_site_id'))
-		            ->from($db->quoteName('#__update_sites_extensions'))
-		            ->where($db->quoteName('extension_id') . ' = :eid')
-		            ->bind(':eid', $extension_id, ParameterType::INTEGER);
-		$usid  = $db->setQuery($query)->loadResult() ?: null;
+			->select($db->quoteName('update_site_id'))
+			->from($db->quoteName('#__update_sites_extensions'))
+			->where($db->quoteName('extension_id') . ' = :eid')
+			->bind(':eid', $extension_id, ParameterType::INTEGER);
+		$usid = $db->setQuery($query)->loadResult() ?: null;
 
-		if (empty($usid))
-		{
+		if (empty($usid)) {
 			throw new RuntimeException('Cannot find the update site for the extension');
 		}
 
 		$query = $db->getQuery(true)
-		            ->update($db->quoteName('#__update_sites'))
-		            ->set($db->quoteName('extra_query') . ' = ' . $db->quote($extraQuery))
-		            ->where($db->quoteName('update_site_id') . ' = :usid')
-		            ->bind(':usid', $usid, ParameterType::INTEGER);
+			->update($db->quoteName('#__update_sites'))
+			->set($db->quoteName('extra_query') . ' = ' . $db->quote($extraQuery))
+			->where($db->quoteName('update_site_id') . ' = :usid')
+			->bind(':usid', $usid, ParameterType::INTEGER);
 
 		$db->setQuery($query)->execute();
 	}
 
 	private function getExtensionId($element, $type, $clientId): ?int
 	{
-		$db    = $this->dbo;
+		$db = $this->dbo;
 		$query = $db->getQuery(true)
-		            ->select($db->quoteName('extension_id'))
-		            ->from($db->quoteName('#__extensions'))
-		            ->where($db->quoteName('type') . ' = :type')
-		            ->where($db->quoteName('element') . ' = :element')
-		            ->where($db->quoteName('client_id') . ' = :client_id');
+			->select($db->quoteName('extension_id'))
+			->from($db->quoteName('#__extensions'))
+			->where($db->quoteName('type') . ' = :type')
+			->where($db->quoteName('element') . ' = :element')
+			->where($db->quoteName('client_id') . ' = :client_id');
 		$query->bind(':type', $type, ParameterType::STRING);
 		$query->bind(':element', $element, ParameterType::STRING);
 		$query->bind(':client_id', $clientId, ParameterType::INTEGER);

@@ -1,6 +1,6 @@
 <?php
 /**
- * mailer.php — Gracefully loads PHPMailer if available.
+ * mailer.php   Gracefully loads PHPMailer if available.
  * If PHPMailer files are missing, sendSiteEmail() will throw
  * an exception that callers can catch without crashing the page.
  */
@@ -8,9 +8,11 @@
 $phpmailerAvailable = false;
 $phpmailerBase = __DIR__ . '/PHPMailer/src/';
 
-if (file_exists($phpmailerBase . 'Exception.php') &&
+if (
+    file_exists($phpmailerBase . 'Exception.php') &&
     file_exists($phpmailerBase . 'PHPMailer.php') &&
-    file_exists($phpmailerBase . 'SMTP.php')) {
+    file_exists($phpmailerBase . 'SMTP.php')
+) {
     require_once $phpmailerBase . 'Exception.php';
     require_once $phpmailerBase . 'PHPMailer.php';
     require_once $phpmailerBase . 'SMTP.php';
@@ -19,7 +21,8 @@ if (file_exists($phpmailerBase . 'Exception.php') &&
 
 require_once __DIR__ . '/db.php';
 
-function sendSiteEmail($toEmail, $toName, $subject, $body, $isHtml = true, $configPrefix = '') {
+function sendSiteEmail($toEmail, $toName, $subject, $body, $isHtml = true, $configPrefix = '')
+{
     global $phpmailerAvailable;
 
     if (!$phpmailerAvailable) {
@@ -29,7 +32,7 @@ function sendSiteEmail($toEmail, $toName, $subject, $body, $isHtml = true, $conf
     $pdo = getPDO();
     $stmt = $pdo->query("SELECT setting_key, setting_value FROM settings");
     $settings_raw = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
-    
+
     // Resolve settings, falling back to global if the prefixed one is empty
     $host = !empty($configPrefix) && !empty($settings_raw[$configPrefix . 'smtp_host']) ? $settings_raw[$configPrefix . 'smtp_host'] : ($settings_raw['smtp_host'] ?? '');
     $port = !empty($configPrefix) && !empty($settings_raw[$configPrefix . 'smtp_port']) ? $settings_raw[$configPrefix . 'smtp_port'] : ($settings_raw['smtp_port'] ?? '587');
@@ -47,19 +50,19 @@ function sendSiteEmail($toEmail, $toName, $subject, $body, $isHtml = true, $conf
     try {
         $mail->CharSet = 'UTF-8';
         $mail->isSMTP();
-        $mail->Host       = $host;
-        $mail->SMTPAuth   = true;
-        $mail->Username   = $user;
-        $mail->Password   = $pass;
+        $mail->Host = $host;
+        $mail->SMTPAuth = true;
+        $mail->Username = $user;
+        $mail->Password = $pass;
         $mail->SMTPSecure = ($port == 465) ? \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS : \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = $port;
+        $mail->Port = $port;
 
         $mail->setFrom($fromEmail, $fromName);
         $mail->addAddress($toEmail, $toName);
 
         $mail->isHTML($isHtml);
         $mail->Subject = $subject;
-        $mail->Body    = $body;
+        $mail->Body = $body;
         $mail->AltBody = strip_tags(str_replace(['<br>', '<br/>'], "\n", $body));
 
         $mail->send();

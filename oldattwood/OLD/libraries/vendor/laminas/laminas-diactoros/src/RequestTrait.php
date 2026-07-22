@@ -70,19 +70,19 @@ trait RequestTrait
         string $method = null,
         $body = 'php://memory',
         array $headers = []
-    ) : void {
+    ): void {
         if ($method !== null) {
             $this->setMethod($method);
         }
 
-        $this->uri    = $this->createUri($uri);
+        $this->uri = $this->createUri($uri);
         $this->stream = $this->getStream($body, 'wb+');
 
         $this->setHeaders($headers);
 
         // per PSR-7: attempt to set the Host header from a provided URI if no
         // Host header is provided
-        if (! $this->hasHeader('Host') && $this->uri->getHost()) {
+        if (!$this->hasHeader('Host') && $this->uri->getHost()) {
             $this->headerNames['host'] = 'Host';
             $this->headers['Host'] = [$this->getHostFromUri()];
         }
@@ -103,7 +103,7 @@ trait RequestTrait
      * @param null|string|UriInterface $uri
      * @throws Exception\InvalidArgumentException
      */
-    private function createUri($uri) : UriInterface
+    private function createUri($uri): UriInterface
     {
         if ($uri instanceof UriInterface) {
             return $uri;
@@ -133,7 +133,7 @@ trait RequestTrait
      * If no URI is available, and no request-target has been specifically
      * provided, this method MUST return the string "/".
      */
-    public function getRequestTarget() : string
+    public function getRequestTarget(): string
     {
         if (null !== $this->requestTarget) {
             return $this->requestTarget;
@@ -154,8 +154,8 @@ trait RequestTrait
     /**
      * Create a new instance with a specific request-target.
      *
-     * If the request needs a non-origin-form request-target — e.g., for
-     * specifying an absolute-form, authority-form, or asterisk-form —
+     * If the request needs a non-origin-form request-target   e.g., for
+     * specifying an absolute-form, authority-form, or asterisk-form  
      * this method may be used to create an instance with the specified
      * request-target, verbatim.
      *
@@ -168,7 +168,7 @@ trait RequestTrait
      * @param string $requestTarget
      * @throws Exception\InvalidArgumentException if the request target is invalid.
      */
-    public function withRequestTarget($requestTarget) : RequestInterface
+    public function withRequestTarget($requestTarget): RequestInterface
     {
         if (preg_match('#\s#', $requestTarget)) {
             throw new Exception\InvalidArgumentException(
@@ -186,7 +186,7 @@ trait RequestTrait
      *
      * @return string Returns the request method.
      */
-    public function getMethod() : string
+    public function getMethod(): string
     {
         return $this->method;
     }
@@ -205,7 +205,7 @@ trait RequestTrait
      * @param string $method Case-insensitive method.
      * @throws Exception\InvalidArgumentException for invalid HTTP methods.
      */
-    public function withMethod($method) : RequestInterface
+    public function withMethod($method): RequestInterface
     {
         $new = clone $this;
         $new->setMethod($method);
@@ -221,7 +221,7 @@ trait RequestTrait
      * @return UriInterface Returns a UriInterface instance
      *     representing the URI of the request, if any.
      */
-    public function getUri() : UriInterface
+    public function getUri(): UriInterface
     {
         return $this->uri;
     }
@@ -250,7 +250,7 @@ trait RequestTrait
      * @param UriInterface $uri New request URI to use.
      * @param bool $preserveHost Preserve the original state of the Host header.
      */
-    public function withUri(UriInterface $uri, $preserveHost = false) : RequestInterface
+    public function withUri(UriInterface $uri, $preserveHost = false): RequestInterface
     {
         $new = clone $this;
         $new->uri = $uri;
@@ -259,7 +259,7 @@ trait RequestTrait
             return $new;
         }
 
-        if (! $uri->getHost()) {
+        if (!$uri->getHost()) {
             return $new;
         }
 
@@ -290,16 +290,16 @@ trait RequestTrait
      * @param string $method
      * @throws Exception\InvalidArgumentException on invalid HTTP method.
      */
-    private function setMethod($method) : void
+    private function setMethod($method): void
     {
-        if (! is_string($method)) {
+        if (!is_string($method)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Unsupported HTTP method; must be a string, received %s',
                 is_object($method) ? get_class($method) : gettype($method)
             ));
         }
 
-        if (! preg_match('/^[!#$%&\'*+.^_`\|~0-9a-z-]+$/i', $method)) {
+        if (!preg_match('/^[!#$%&\'*+.^_`\|~0-9a-z-]+$/i', $method)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Unsupported HTTP method "%s" provided',
                 $method
@@ -311,9 +311,9 @@ trait RequestTrait
     /**
      * Retrieve the host from the URI instance
      */
-    private function getHostFromUri() : string
+    private function getHostFromUri(): string
     {
-        $host  = $this->uri->getHost();
+        $host = $this->uri->getHost();
         $host .= $this->uri->getPort() ? ':' . $this->uri->getPort() : '';
         return $host;
     }

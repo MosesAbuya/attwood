@@ -139,7 +139,7 @@
 
     color: $base-blockquote-footer-color;
 
-    &::before { content: "— "; }
+    &::before { content: "  "; }
 
 }
 @mixin hook-base-pre(){

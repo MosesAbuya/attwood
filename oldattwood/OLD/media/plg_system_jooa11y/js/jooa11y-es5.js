@@ -2398,7 +2398,7 @@
       disable: disable,
       unmount: unmount,
       destroy: destroy
-    }; // TODO: Investigate why this early return causes a TDZ error in the tests —
+    }; // TODO: Investigate why this early return causes a TDZ error in the tests  
     // it doesn't seem to happen in the browser
 
     /* istanbul ignore if */

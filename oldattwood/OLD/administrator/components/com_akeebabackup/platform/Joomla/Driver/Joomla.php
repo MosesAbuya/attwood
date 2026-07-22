@@ -39,8 +39,7 @@ class Joomla
 		/** @var DatabaseInterface|null $db */
 		$db = \Akeeba\Engine\Platform\Joomla::getDbDriver();
 
-		if (empty($db))
-		{
+		if (empty($db)) {
 			throw new RuntimeException("Joomla does not return a database driver.");
 		}
 
@@ -50,12 +49,11 @@ class Joomla
 
 		$driver = $this->getDriverType($db);
 
-		if (empty($driver))
-		{
+		if (empty($driver)) {
 			throw new RuntimeException("Unsupported database driver {$db->getName()}");
 		}
 
-		$driver    = '\\Akeeba\\Engine\\Driver\\' . ucfirst($driver);
+		$driver = '\\Akeeba\\Engine\\Driver\\' . ucfirst($driver);
 		$this->dbo = new $driver($options);
 	}
 
@@ -78,15 +76,13 @@ class Joomla
 
 	public function open()
 	{
-		if (method_exists($this->dbo, 'open'))
-		{
+		if (method_exists($this->dbo, 'open')) {
 			$this->dbo->open();
 
 			return;
 		}
 
-		if (method_exists($this->dbo, 'connect'))
-		{
+		if (method_exists($this->dbo, 'connect')) {
 			$this->dbo->connect();
 		}
 	}
@@ -98,13 +94,11 @@ class Joomla
 	 */
 	public function __call($name, array $arguments)
 	{
-		if (is_null($this->dbo))
-		{
+		if (is_null($this->dbo)) {
 			throw new Exception('Akeeba Engine database driver is not loaded');
 		}
 
-		if (method_exists($this->dbo, $name) || in_array($name, ['q', 'nq', 'qn']))
-		{
+		if (method_exists($this->dbo, $name) || in_array($name, ['q', 'nq', 'qn'])) {
 			return $this->dbo->{$name}(...$arguments);
 		}
 
@@ -113,8 +107,7 @@ class Joomla
 
 	public function __get($name)
 	{
-		if (isset($this->dbo->$name) || property_exists($this->dbo, $name))
-		{
+		if (isset($this->dbo->$name) || property_exists($this->dbo, $name)) {
 			return $this->dbo->$name;
 		}
 
@@ -127,8 +120,7 @@ class Joomla
 
 	public function __set($name, $value)
 	{
-		if (isset($this->dbo->name) || property_exists($this->dbo, $name))
-		{
+		if (isset($this->dbo->name) || property_exists($this->dbo, $name)) {
 			$this->dbo->$name = $value;
 
 			return;
@@ -153,32 +145,24 @@ class Joomla
 	private function getDriverType($db): ?string
 	{
 		// Make sure we got an object
-		if (!is_object($db))
-		{
+		if (!is_object($db)) {
 			return null;
 		}
 
-		// Get the Joomla database driver name — assuming the object passed is a DatabaseInterface instance
-		if (method_exists($db, 'getName'))
-		{
+		// Get the Joomla database driver name   assuming the object passed is a DatabaseInterface instance
+		if (method_exists($db, 'getName')) {
 			$jDriverName = $db->getName();
-		}
-		else
-		{
+		} else {
 			// On Joomla 4 this is supposed to raise an E_USER_DEPRECATED notice
 			$jDriverName = $db->name ?? '';
 		}
 
 		// Quick shortcuts to known core Joomla database drivers
-		if (in_array($jDriverName, ['mysql', 'pdomysql']))
-		{
+		if (in_array($jDriverName, ['mysql', 'pdomysql'])) {
 			return 'pdomysql';
-		}
-		elseif ($jDriverName === 'mysqli')
-		{
+		} elseif ($jDriverName === 'mysqli') {
 			return 'mysqli';
-		}
-		elseif (
+		} elseif (
 			(stristr($jDriverName, 'postgre') !== false)
 			|| (stristr($jDriverName, 'pgsql') !== false)
 			|| (stristr($jDriverName, 'oracle') !== false)
@@ -186,8 +170,7 @@ class Joomla
 			|| (stristr($jDriverName, 'sqlsrv') !== false)
 			|| (stristr($jDriverName, 'sqlazure') !== false)
 			|| (stristr($jDriverName, 'mssql') !== false)
-		)
-		{
+		) {
 			return null;
 		}
 
@@ -204,35 +187,28 @@ class Joomla
 		if (
 			(class_exists(MysqlDriver::class) && ($db instanceof MysqlDriver))
 			|| (class_exists(Pdomysql::class) && ($db instanceof Pdomysql))
-		)
-		{
+		) {
 			return 'pdomysql';
-		}
-		elseif (class_exists(MysqliDriver::class) && ($db instanceof MysqliDriver))
-		{
+		} elseif (class_exists(MysqliDriver::class) && ($db instanceof MysqliDriver)) {
 			return 'mysqli';
-		}
-		elseif (
+		} elseif (
 			(class_exists(PgsqlDriver::class) && ($db instanceof PgsqlDriver))
 			|| (class_exists(SqliteDriver::class) && ($db instanceof SqliteDriver))
 			|| (class_exists(SqlsrvDriver::class) && ($db instanceof SqlsrvDriver))
 			|| (class_exists(SqlazureDriver::class) && ($db instanceof SqlazureDriver))
-		)
-		{
+		) {
 			return null;
 		}
 
 		// We still have no idea. We will need to use reflection. If it's unavailable we give up.
-		if (!class_exists(ReflectionObject::class))
-		{
+		if (!class_exists(ReflectionObject::class)) {
 			return null;
 		}
 
 		$refDriver = new ReflectionObject($db);
 
 		// Is this a generic PDO driver instance?
-		if ((class_exists(PdoDriver::class) && ($db instanceof PdoDriver)) && $refDriver->hasProperty('options'))
-		{
+		if ((class_exists(PdoDriver::class) && ($db instanceof PdoDriver)) && $refDriver->hasProperty('options')) {
 			$refOptions = $refDriver->getProperty('options');
 			$refOptions->setAccessible(true);
 			$options = $refOptions->getValue($db);
@@ -240,8 +216,7 @@ class Joomla
 
 			$pdoDriver = $options['driver'] ?? 'odbc';
 
-			switch ($pdoDriver)
-			{
+			switch ($pdoDriver) {
 				// PDO MySQL. We support this!
 				case 'mysql':
 					return 'pdomysql';
@@ -251,14 +226,12 @@ class Joomla
 					$dsn = $options['dsn'] ?? '';
 
 					// No DSN? No joy.
-					if (empty($dsn))
-					{
+					if (empty($dsn)) {
 						return null;
 					}
 
 					// That's MySQL over ODBC over PDO. OK, rather strained but we can do that.
-					if (stripos($dsn, 'mysql:') === 0)
-					{
+					if (stripos($dsn, 'mysql:') === 0) {
 						return 'pdomysql';
 					}
 
@@ -279,8 +252,7 @@ class Joomla
 			return $carry || (stripos($className, 'mysqli') !== false);
 		}, false);
 
-		if ($isMySQLi)
-		{
+		if ($isMySQLi) {
 			return 'mysqli';
 		}
 
@@ -288,8 +260,7 @@ class Joomla
 			return $carry || (stripos($className, 'pdomysql') !== false);
 		}, false);
 
-		if ($isPdoMySQL)
-		{
+		if ($isPdoMySQL) {
 			return 'pdomysql';
 		}
 

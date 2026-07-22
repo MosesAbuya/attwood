@@ -1780,7 +1780,7 @@ class Mark$1 {
    *   <li>One or more apostrophes between the letters would still produce a
    *   match (e.g. "W'o''r'l'd's").</li>
    *   <li>A typical setting for this option could be as follows:
-   *   <pre>ignorePunctuation: ":;.,-–—‒_(){}[]!'\"+=".split(""),</pre> This
+   *   <pre>ignorePunctuation: ":;.,-– ‒_(){}[]!'\"+=".split(""),</pre> This
    *   setting includes common punctuation as well as a minus, en-dash,
    *   em-dash and figure-dash
    *   ({@link https://en.wikipedia.org/wiki/Dash#Figure_dash ref}), as well

@@ -89,7 +89,7 @@ trait MultiFactorAuthenticationHandler
          * The captive pages don't load any content or modules, therefore the few extra milliseconds
          * we spend here are not a big deal. A failed all-users migration which would stop Joomla
          * Update dead in its tracks would, however, be a big deal (broken sites). Moreover, a
-         * migration that has to be initiated by the site owner would also be a big deal — if they
+         * migration that has to be initiated by the site owner would also be a big deal   if they
          * did not know they need to do it none of their users who had previously enabled MFA would
          * now have it enabled!
          *
@@ -99,25 +99,25 @@ trait MultiFactorAuthenticationHandler
         $this->migrateFromLegacyMFA();
 
         // We only kick in when the user has actually set up MFA or must definitely enable MFA.
-        $userOptions        = ComponentHelper::getParams('com_users');
+        $userOptions = ComponentHelper::getParams('com_users');
         $neverMFAUserGroups = $userOptions->get('neverMFAUserGroups', []);
         $forceMFAUserGroups = $userOptions->get('forceMFAUserGroups', []);
-        $isMFADisallowed    = count(
+        $isMFADisallowed = count(
             array_intersect(
                 is_array($neverMFAUserGroups) ? $neverMFAUserGroups : [],
                 $user->getAuthorisedGroups()
             )
         ) >= 1;
-        $isMFAMandatory     = count(
+        $isMFAMandatory = count(
             array_intersect(
                 is_array($forceMFAUserGroups) ? $forceMFAUserGroups : [],
                 $user->getAuthorisedGroups()
             )
         ) >= 1;
         $isMFADisallowed = $isMFADisallowed && !$isMFAMandatory;
-        $isMFAPending    = $this->isMultiFactorAuthenticationPending();
-        $session         = $this->getSession();
-        $isNonHtml       = $this->input->getCmd('format', 'html') !== 'html';
+        $isMFAPending = $this->isMultiFactorAuthenticationPending();
+        $session = $this->getSession();
+        $isNonHtml = $this->input->getCmd('format', 'html') !== 'html';
 
         // Prevent non-interactive (non-HTML) content from being loaded until MFA is validated.
         if ($isMFAPending && $isNonHtml) {
@@ -133,7 +133,7 @@ trait MultiFactorAuthenticationHandler
              * If no return URL has been set up and the current URL is com_users' MFA feature
              * we will save the home page as the redirect target.
              */
-            $returnUrl       = $session->get('com_users.return_url', '');
+            $returnUrl = $session->get('com_users.return_url', '');
 
             if (empty($returnUrl) || !Uri::isInternal($returnUrl)) {
                 $returnUrl = $this->isMultiFactorAuthenticationPage()
@@ -169,11 +169,11 @@ trait MultiFactorAuthenticationHandler
 
         if (
             !$isMFAPending && !$isMFADisallowed && ($userOptions->get('mfaredirectonlogin', 0) == 1)
-            && !$user->guest  && !$hasRejectedMultiFactorAuthenticationSetup && !empty(MfaHelper::getMfaMethods())
+            && !$user->guest && !$hasRejectedMultiFactorAuthenticationSetup && !empty(MfaHelper::getMfaMethods())
         ) {
             $this->redirect(
                 $userOptions->get('mfaredirecturl', '') ?:
-                    Route::_('index.php?option=com_users&view=methods&layout=firsttime', false)
+                Route::_('index.php?option=com_users&view=methods&layout=firsttime', false)
             );
         }
 
@@ -247,8 +247,8 @@ trait MultiFactorAuthenticationHandler
          * MFA enabled we have the recheck flag. This prevents the user from enabling and immediately disabling MFA,
          * circumventing the requirement for MFA.
          */
-        $session             = $this->getSession();
-        $isMFAComplete       = $session->get('com_users.mfa_checked', 0) != 0;
+        $session = $this->getSession();
+        $isMFAComplete = $session->get('com_users.mfa_checked', 0) != 0;
         $isMFASetupMandatory = $session->get('com_users.mandatory_mfa_setup', 0) != 0;
 
         if ($isMFAComplete && !$isMFASetupMandatory) {
@@ -279,8 +279,8 @@ trait MultiFactorAuthenticationHandler
             return false;
         }
 
-        $option       = strtolower($this->input->getCmd('option', ''));
-        $task         = strtolower($this->input->getCmd('task', ''));
+        $option = strtolower($this->input->getCmd('option', ''));
+        $task = strtolower($this->input->getCmd('task', ''));
 
         // Allow the frontend user to log out (in case they forgot their MFA code or something)
         if (!$isAdmin && ($option == 'com_users') && in_array($task, ['user.logout', 'user.menulogout'])) {
@@ -311,8 +311,8 @@ trait MultiFactorAuthenticationHandler
     public function isMultiFactorAuthenticationPage(bool $onlyCaptive = false): bool
     {
         $option = $this->input->get('option');
-        $task   = $this->input->get('task');
-        $view   = $this->input->get('view');
+        $task = $this->input->get('task');
+        $view = $this->input->get('view');
 
         if ($option !== 'com_users') {
             return false;
@@ -320,7 +320,9 @@ trait MultiFactorAuthenticationHandler
 
         $allowedViews = ['captive', 'method', 'methods', 'callback'];
         $allowedTasks = [
-            'captive.display', 'captive.captive', 'captive.validate',
+            'captive.display',
+            'captive.captive',
+            'captive.validate',
             'methods.display',
         ];
 
@@ -328,8 +330,14 @@ trait MultiFactorAuthenticationHandler
             $allowedTasks = array_merge(
                 $allowedTasks,
                 [
-                    'method.display', 'method.add', 'method.edit', 'method.regenerateBackupCodes',
-                    'method.delete', 'method.save', 'methods.disable', 'methods.doNotShowThisAgain',
+                    'method.display',
+                    'method.add',
+                    'method.edit',
+                    'method.regenerateBackupCodes',
+                    'method.delete',
+                    'method.save',
+                    'methods.disable',
+                    'methods.doNotShowThisAgain',
                 ]
             );
         }
@@ -345,11 +353,11 @@ trait MultiFactorAuthenticationHandler
      */
     private function hasRejectedMultiFactorAuthenticationSetup(): bool
     {
-        $user       = $this->getIdentity();
+        $user = $this->getIdentity();
         $profileKey = 'mfa.dontshow';
         /** @var DatabaseDriver $db */
-        $db         = Factory::getContainer()->get('DatabaseDriver');
-        $query      = $db->getQuery(true)
+        $db = Factory::getContainer()->get('DatabaseDriver');
+        $query = $db->getQuery(true)
             ->select($db->quoteName('profile_value'))
             ->from($db->quoteName('#__user_profiles'))
             ->where($db->quoteName('user_id') . ' = :userId')
@@ -381,7 +389,7 @@ trait MultiFactorAuthenticationHandler
         }
 
         /** @var DatabaseDriver $db */
-        $db         = Factory::getContainer()->get('DatabaseDriver');
+        $db = Factory::getContainer()->get('DatabaseDriver');
 
         $userTable = new UserTable($db);
 
@@ -390,10 +398,10 @@ trait MultiFactorAuthenticationHandler
         }
 
         [$otpMethod, $otpKey] = explode(':', $userTable->otpKey, 2);
-        $secret       = $this->get('secret');
-        $otpKey       = $this->decryptLegacyTFAString($secret, $otpKey);
-        $otep         = $this->decryptLegacyTFAString($secret, $userTable->otep);
-        $config       = @json_decode($otpKey, true);
+        $secret = $this->get('secret');
+        $otpKey = $this->decryptLegacyTFAString($secret, $otpKey);
+        $otep = $this->decryptLegacyTFAString($secret, $userTable->otep);
+        $config = @json_decode($otpKey, true);
         $hasConverted = true;
 
         if (!empty($config)) {
@@ -403,13 +411,13 @@ trait MultiFactorAuthenticationHandler
 
                     (new MfaTable($db))->save(
                         [
-                            'user_id'    => $user->id,
-                            'title'      => Text::_('PLG_MULTIFACTORAUTH_TOTP_METHOD_TITLE'),
-                            'method'     => 'totp',
-                            'default'    => 0,
+                            'user_id' => $user->id,
+                            'title' => Text::_('PLG_MULTIFACTORAUTH_TOTP_METHOD_TITLE'),
+                            'method' => 'totp',
+                            'default' => 0,
                             'created_on' => Date::getInstance()->toSql(),
-                            'last_used'  => null,
-                            'options'    => ['key' => $config['code']],
+                            'last_used' => null,
+                            'options' => ['key' => $config['code']],
                         ]
                     );
                     break;
@@ -419,13 +427,13 @@ trait MultiFactorAuthenticationHandler
 
                     (new MfaTable($db))->save(
                         [
-                            'user_id'    => $user->id,
-                            'title'      => sprintf("%s %s", Text::_('PLG_MULTIFACTORAUTH_YUBIKEY_METHOD_TITLE'), $config['yubikey']),
-                            'method'     => 'yubikey',
-                            'default'    => 0,
+                            'user_id' => $user->id,
+                            'title' => sprintf("%s %s", Text::_('PLG_MULTIFACTORAUTH_YUBIKEY_METHOD_TITLE'), $config['yubikey']),
+                            'method' => 'yubikey',
+                            'default' => 0,
                             'created_on' => Date::getInstance()->toSql(),
-                            'last_used'  => null,
-                            'options'    => ['id' => $config['yubikey']],
+                            'last_used' => null,
+                            'options' => ['id' => $config['yubikey']],
                         ]
                     );
                     break;
@@ -441,7 +449,7 @@ trait MultiFactorAuthenticationHandler
             // Delete any other record with the same user_id and Method.
             $method = 'emergencycodes';
             $userId = $user->id;
-            $query  = $db->getQuery(true)
+            $query = $db->getQuery(true)
                 ->delete($db->qn('#__user_mfa'))
                 ->where($db->qn('user_id') . ' = :user_id')
                 ->where($db->qn('method') . ' = :method')
@@ -452,22 +460,22 @@ trait MultiFactorAuthenticationHandler
             // Migrate data
             (new MfaTable($db))->save(
                 [
-                    'user_id'    => $user->id,
-                    'title'      => Text::_('COM_USERS_USER_BACKUPCODES'),
-                    'method'     => 'backupcodes',
-                    'default'    => 0,
+                    'user_id' => $user->id,
+                    'title' => Text::_('COM_USERS_USER_BACKUPCODES'),
+                    'method' => 'backupcodes',
+                    'default' => 0,
                     'created_on' => Date::getInstance()->toSql(),
-                    'last_used'  => null,
-                    'options'    => @json_decode($otep, true),
+                    'last_used' => null,
+                    'options' => @json_decode($otep, true),
                 ]
             );
         }
 
         // Remove the legacy MFA
         $update = (object) [
-            'id'     => $user->id,
+            'id' => $user->id,
             'otpKey' => '',
-            'otep'   => '',
+            'otep' => '',
         ];
         $db->updateObject('#__users', $update, ['id']);
     }
@@ -497,7 +505,7 @@ trait MultiFactorAuthenticationHandler
         }
 
         // No, we need to decrypt the string
-        $aes       = new Aes($secret, 256);
+        $aes = new Aes($secret, 256);
         $decrypted = $aes->decryptString($stringToDecrypt);
 
         if (!is_string($decrypted) || empty($decrypted)) {

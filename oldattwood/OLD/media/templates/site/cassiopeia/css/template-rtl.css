@@ -589,7 +589,7 @@ progress {
   color: hsl(210deg, 7%, 46%);
 }
 .blockquote-footer::before {
-  content: "— ";
+  content: "  ";
 }
 
 .img-fluid {

@@ -302,7 +302,7 @@ $linear-channel-values:
 // Helper: Calculate Luminance of a single color
 // Adapted from: https://medium.com/dev-channel/using-sass-to-automatically-pick-text-colors-4ba7645d2796
 // White luminance is 1, Black luminance is 0
-// To be used in other functions or mixins — creates non-standard CSS output:
+// To be used in other functions or mixins   creates non-standard CSS output:
 // Usage:
 // .sample { luminance: luminance(#c00); }
 // Output:
@@ -321,7 +321,7 @@ $linear-channel-values:
 // Helper: Calculate "readability" as defined by WCAG 2.1
 // Adapted from: https://github.com/LeaVerou/contrast-ratio/blob/gh-pages/color.js
 // Formula: http://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
-// To be used in other functions or mixins — creates non-standard CSS output:
+// To be used in other functions or mixins   creates non-standard CSS output:
 // Usage:
 // .sample { color-contrast: color-contrast(#c00, #fff); }
 // Output:
@@ -341,7 +341,7 @@ $linear-channel-values:
 
 // validate-font-size($size)
 // Helper: Depending on the unit recalculate a font size value into pixels if possible
-// To be used in other functions or mixins — creates non-standard CSS output:
+// To be used in other functions or mixins   creates non-standard CSS output:
 // Usage:
 // .sample { validate-font-size: validate-font-size(1em); }
 // Output:
@@ -368,7 +368,7 @@ $linear-channel-values:
 
 // get-ratio($level: 'AA', $size: 16, $bold: false)
 // Helper: Determine the correct ratio value to use based on font-size and WCAG Level
-// To be used in other functions or mixins — creates non-standard CSS output:
+// To be used in other functions or mixins   creates non-standard CSS output:
 // Usage:
 // .sample { get-ratio: get-ratio('AAA', 19, true); }
 // Output:
@@ -409,7 +409,7 @@ $linear-channel-values:
 // light-or-dark($color)
 // Helper: Use contrast against white or black to determine if a color is "light" or "dark"
 // Adapted from: https://medium.com/dev-channel/using-sass-to-automatically-pick-text-colors-4ba7645d2796
-// To be used in other functions or mixins — creates non-standard CSS output:
+// To be used in other functions or mixins   creates non-standard CSS output:
 // Usage:
 // .sample { light-or-dark: light-or-dark(#c00); }
 // Output:

@@ -25,16 +25,16 @@ final class UTF8
      * @var array<string, int>
      */
     private static $BOM = [
-        "\xef\xbb\xbf"     => 3, // UTF-8 BOM
-        'ï»¿'              => 6, // UTF-8 BOM as "WINDOWS-1252" (one char has [maybe] more then one byte ...)
+        "\xef\xbb\xbf" => 3, // UTF-8 BOM
+        'ï»¿' => 6, // UTF-8 BOM as "WINDOWS-1252" (one char has [maybe] more then one byte ...)
         "\x00\x00\xfe\xff" => 4, // UTF-32 (BE) BOM
-        '  þÿ'             => 6, // UTF-32 (BE) BOM as "WINDOWS-1252"
+        '  þÿ' => 6, // UTF-32 (BE) BOM as "WINDOWS-1252"
         "\xff\xfe\x00\x00" => 4, // UTF-32 (LE) BOM
-        'ÿþ  '             => 6, // UTF-32 (LE) BOM as "WINDOWS-1252"
-        "\xfe\xff"         => 2, // UTF-16 (BE) BOM
-        'þÿ'               => 4, // UTF-16 (BE) BOM as "WINDOWS-1252"
-        "\xff\xfe"         => 2, // UTF-16 (LE) BOM
-        'ÿþ'               => 4, // UTF-16 (LE) BOM as "WINDOWS-1252"
+        'ÿþ  ' => 6, // UTF-32 (LE) BOM as "WINDOWS-1252"
+        "\xfe\xff" => 2, // UTF-16 (BE) BOM
+        'þÿ' => 4, // UTF-16 (BE) BOM as "WINDOWS-1252"
+        "\xff\xfe" => 2, // UTF-16 (LE) BOM
+        'ÿþ' => 4, // UTF-16 (LE) BOM as "WINDOWS-1252"
     ];
 
     /**
@@ -103,27 +103,27 @@ final class UTF8
      * @var array<string, string>
      */
     private static $WHITESPACE_TABLE = [
-        'SPACE'                     => "\x20",
-        'NO-BREAK SPACE'            => "\xc2\xa0",
-        'OGHAM SPACE MARK'          => "\xe1\x9a\x80",
-        'EN QUAD'                   => "\xe2\x80\x80",
-        'EM QUAD'                   => "\xe2\x80\x81",
-        'EN SPACE'                  => "\xe2\x80\x82",
-        'EM SPACE'                  => "\xe2\x80\x83",
-        'THREE-PER-EM SPACE'        => "\xe2\x80\x84",
-        'FOUR-PER-EM SPACE'         => "\xe2\x80\x85",
-        'SIX-PER-EM SPACE'          => "\xe2\x80\x86",
-        'FIGURE SPACE'              => "\xe2\x80\x87",
-        'PUNCTUATION SPACE'         => "\xe2\x80\x88",
-        'THIN SPACE'                => "\xe2\x80\x89",
-        'HAIR SPACE'                => "\xe2\x80\x8a",
-        'LINE SEPARATOR'            => "\xe2\x80\xa8",
-        'PARAGRAPH SEPARATOR'       => "\xe2\x80\xa9",
-        'ZERO WIDTH SPACE'          => "\xe2\x80\x8b",
-        'NARROW NO-BREAK SPACE'     => "\xe2\x80\xaf",
+        'SPACE' => "\x20",
+        'NO-BREAK SPACE' => "\xc2\xa0",
+        'OGHAM SPACE MARK' => "\xe1\x9a\x80",
+        'EN QUAD' => "\xe2\x80\x80",
+        'EM QUAD' => "\xe2\x80\x81",
+        'EN SPACE' => "\xe2\x80\x82",
+        'EM SPACE' => "\xe2\x80\x83",
+        'THREE-PER-EM SPACE' => "\xe2\x80\x84",
+        'FOUR-PER-EM SPACE' => "\xe2\x80\x85",
+        'SIX-PER-EM SPACE' => "\xe2\x80\x86",
+        'FIGURE SPACE' => "\xe2\x80\x87",
+        'PUNCTUATION SPACE' => "\xe2\x80\x88",
+        'THIN SPACE' => "\xe2\x80\x89",
+        'HAIR SPACE' => "\xe2\x80\x8a",
+        'LINE SEPARATOR' => "\xe2\x80\xa8",
+        'PARAGRAPH SEPARATOR' => "\xe2\x80\xa9",
+        'ZERO WIDTH SPACE' => "\xe2\x80\x8b",
+        'NARROW NO-BREAK SPACE' => "\xe2\x80\xaf",
         'MEDIUM MATHEMATICAL SPACE' => "\xe2\x81\x9f",
-        'IDEOGRAPHIC SPACE'         => "\xe3\x80\x80",
-        'HALFWIDTH HANGUL FILLER'   => "\xef\xbe\xa0",
+        'IDEOGRAPHIC SPACE' => "\xe3\x80\x80",
+        'HALFWIDTH HANGUL FILLER' => "\xef\xbe\xa0",
     ];
 
     /**
@@ -660,22 +660,22 @@ final class UTF8
              * @psalm-suppress PossiblyNullArrayAccess
              */
             $chr = self::$CHR[($code_point >> 6) + 0xC0] .
-                   self::$CHR[($code_point & 0x3F) + 0x80];
+                self::$CHR[($code_point & 0x3F) + 0x80];
         } elseif ($code_point <= 0xFFFF) {
             /**
              * @psalm-suppress PossiblyNullArrayAccess
              */
             $chr = self::$CHR[($code_point >> 12) + 0xE0] .
-                   self::$CHR[(($code_point >> 6) & 0x3F) + 0x80] .
-                   self::$CHR[($code_point & 0x3F) + 0x80];
+                self::$CHR[(($code_point >> 6) & 0x3F) + 0x80] .
+                self::$CHR[($code_point & 0x3F) + 0x80];
         } else {
             /**
              * @psalm-suppress PossiblyNullArrayAccess
              */
             $chr = self::$CHR[($code_point >> 18) + 0xF0] .
-                   self::$CHR[(($code_point >> 12) & 0x3F) + 0x80] .
-                   self::$CHR[(($code_point >> 6) & 0x3F) + 0x80] .
-                   self::$CHR[($code_point & 0x3F) + 0x80];
+                self::$CHR[(($code_point >> 12) & 0x3F) + 0x80] .
+                self::$CHR[(($code_point >> 6) & 0x3F) + 0x80] .
+                self::$CHR[($code_point & 0x3F) + 0x80];
         }
 
         if ($encoding !== 'UTF-8') {
@@ -860,7 +860,7 @@ final class UTF8
     /**
      * Accepts a string and removes all non-UTF-8 characters from it + extras if needed.
      *
-     * EXAMPLE: <code>UTF8::clean("\xEF\xBB\xBF„Abcdef\xc2\xa0\x20…” — 😃 - DÃ¼sseldorf", true, true); // '„Abcdef  …” — 😃 - DÃ¼sseldorf'</code>
+     * EXAMPLE: <code>UTF8::clean("\xEF\xBB\xBF„Abcdef\xc2\xa0\x20…”   😃 - DÃ¼sseldorf", true, true); // '„Abcdef  …”   😃 - DÃ¼sseldorf'</code>
      *
      * @param string $str                                     <p>The string to be sanitized.</p>
      * @param bool   $remove_bom                              [optional] <p>Set to true, if you need to remove
@@ -943,7 +943,7 @@ final class UTF8
     /**
      * Clean-up a string and show only printable UTF-8 chars at the end  + fix UTF-8 encoding.
      *
-     * EXAMPLE: <code>UTF8::cleanup("\xEF\xBB\xBF„Abcdef\xc2\xa0\x20…” — 😃 - DÃ¼sseldorf", true, true); // '„Abcdef  …” — 😃 - Düsseldorf'</code>
+     * EXAMPLE: <code>UTF8::cleanup("\xEF\xBB\xBF„Abcdef\xc2\xa0\x20…”   😃 - DÃ¼sseldorf", true, true); // '„Abcdef  …”   😃 - Düsseldorf'</code>
      *
      * @param string $str <p>The input string.</p>
      *
@@ -1269,7 +1269,7 @@ final class UTF8
         $asciiOffset = 0x41;
 
         return (self::chr((self::ord($country_code_iso_3166_1[0]) - $asciiOffset + $flagOffset)) ?? '') .
-               (self::chr((self::ord($country_code_iso_3166_1[1]) - $asciiOffset + $flagOffset)) ?? '');
+            (self::chr((self::ord($country_code_iso_3166_1[1]) - $asciiOffset + $flagOffset)) ?? '');
     }
 
     /**
@@ -1568,10 +1568,10 @@ final class UTF8
             '',
             $str,
             [
-                'scheme'           => $transfer_encoding,
-                'line-length'      => $indent,
-                'input-charset'    => $from_charset,
-                'output-charset'   => $to_charset,
+                'scheme' => $transfer_encoding,
+                'line-length' => $indent,
+                'input-charset' => $from_charset,
+                'output-charset' => $to_charset,
                 'line-break-chars' => $linefeed,
             ]
         );
@@ -1960,7 +1960,7 @@ final class UTF8
 
                 break;
             default:
-                // nothing
+            // nothing
         }
 
         /** @noinspection PhpSillyAssignmentInspection */
@@ -2437,7 +2437,8 @@ final class UTF8
         }
 
         if ($c <= 0x85e) {
-            if ($c === 0x5be ||
+            if (
+                $c === 0x5be ||
                 $c === 0x5c0 ||
                 $c === 0x5c3 ||
                 $c === 0x5c6 ||
@@ -2473,7 +2474,8 @@ final class UTF8
         } elseif ($c === 0x200f) {
             return 'RTL';
         } elseif ($c >= 0xfb1d) {
-            if ($c === 0xfb1d ||
+            if (
+                $c === 0xfb1d ||
                 ($c >= 0xfb1f && $c <= 0xfb28) ||
                 ($c >= 0xfb2a && $c <= 0xfb36) ||
                 ($c >= 0xfb38 && $c <= 0xfb3c) ||
@@ -2560,7 +2562,7 @@ final class UTF8
     public static function get_file_type(
         string $str,
         array $fallback = [
-            'ext'  => null,
+            'ext' => null,
             'mime' => 'application/octet-stream',
             'type' => null,
         ]
@@ -2619,7 +2621,7 @@ final class UTF8
         }
 
         return [
-            'ext'  => $ext,
+            'ext' => $ext,
             'mime' => $mime,
             'type' => $type,
         ];
@@ -2706,10 +2708,10 @@ final class UTF8
         }
 
         $unique_helper = $rand_int .
-                         \session_id() .
-                         ($_SERVER['REMOTE_ADDR'] ?? '') .
-                         ($_SERVER['SERVER_ADDR'] ?? '') .
-                         $extra_entropy;
+            \session_id() .
+            ($_SERVER['REMOTE_ADDR'] ?? '') .
+            ($_SERVER['SERVER_ADDR'] ?? '') .
+            $extra_entropy;
 
         $unique_string = \uniqid($unique_helper, true);
 
@@ -3968,17 +3970,19 @@ final class UTF8
 
         // e.g. -> the server itself connect to "https://foo.localhost/phpmyadmin/...
         if ($disallow_localhost) {
-            if (self::str_istarts_with_any(
-                $url,
-                [
-                    'http://localhost',
-                    'https://localhost',
-                    'http://127.0.0.1',
-                    'https://127.0.0.1',
-                    'http://::1',
-                    'https://::1',
-                ]
-            )) {
+            if (
+                self::str_istarts_with_any(
+                    $url,
+                    [
+                        'http://localhost',
+                        'https://localhost',
+                        'http://127.0.0.1',
+                        'https://127.0.0.1',
+                        'http://::1',
+                        'https://::1',
+                    ]
+                )
+            ) {
                 return false;
             }
 
@@ -4079,8 +4083,8 @@ final class UTF8
         /** @noinspection PhpUsageOfSilenceOperatorInspection */
         /** @noinspection UnserializeExploitsInspection */
         return $str === 'b:0;'
-               ||
-               @\unserialize($str) !== false;
+            ||
+            @\unserialize($str) !== false;
     }
 
     /**
@@ -4872,69 +4876,69 @@ final class UTF8
         $encoding_upper_helper = (string) \preg_replace('/[^a-zA-Z0-9]/u', '', $encoding);
 
         $equivalences = [
-            'ISO8859'     => 'ISO-8859-1',
-            'ISO88591'    => 'ISO-8859-1',
-            'ISO'         => 'ISO-8859-1',
-            'LATIN'       => 'ISO-8859-1',
-            'LATIN1'      => 'ISO-8859-1', // Western European
-            'ISO88592'    => 'ISO-8859-2',
-            'LATIN2'      => 'ISO-8859-2', // Central European
-            'ISO88593'    => 'ISO-8859-3',
-            'LATIN3'      => 'ISO-8859-3', // Southern European
-            'ISO88594'    => 'ISO-8859-4',
-            'LATIN4'      => 'ISO-8859-4', // Northern European
-            'ISO88595'    => 'ISO-8859-5',
-            'ISO88596'    => 'ISO-8859-6', // Greek
-            'ISO88597'    => 'ISO-8859-7',
-            'ISO88598'    => 'ISO-8859-8', // Hebrew
-            'ISO88599'    => 'ISO-8859-9',
-            'LATIN5'      => 'ISO-8859-9', // Turkish
-            'ISO885911'   => 'ISO-8859-11',
-            'TIS620'      => 'ISO-8859-11', // Thai
-            'ISO885910'   => 'ISO-8859-10',
-            'LATIN6'      => 'ISO-8859-10', // Nordic
-            'ISO885913'   => 'ISO-8859-13',
-            'LATIN7'      => 'ISO-8859-13', // Baltic
-            'ISO885914'   => 'ISO-8859-14',
-            'LATIN8'      => 'ISO-8859-14', // Celtic
-            'ISO885915'   => 'ISO-8859-15',
-            'LATIN9'      => 'ISO-8859-15', // Western European (with some extra chars e.g. €)
-            'ISO885916'   => 'ISO-8859-16',
-            'LATIN10'     => 'ISO-8859-16', // Southeast European
-            'CP1250'      => 'WINDOWS-1250',
-            'WIN1250'     => 'WINDOWS-1250',
+            'ISO8859' => 'ISO-8859-1',
+            'ISO88591' => 'ISO-8859-1',
+            'ISO' => 'ISO-8859-1',
+            'LATIN' => 'ISO-8859-1',
+            'LATIN1' => 'ISO-8859-1', // Western European
+            'ISO88592' => 'ISO-8859-2',
+            'LATIN2' => 'ISO-8859-2', // Central European
+            'ISO88593' => 'ISO-8859-3',
+            'LATIN3' => 'ISO-8859-3', // Southern European
+            'ISO88594' => 'ISO-8859-4',
+            'LATIN4' => 'ISO-8859-4', // Northern European
+            'ISO88595' => 'ISO-8859-5',
+            'ISO88596' => 'ISO-8859-6', // Greek
+            'ISO88597' => 'ISO-8859-7',
+            'ISO88598' => 'ISO-8859-8', // Hebrew
+            'ISO88599' => 'ISO-8859-9',
+            'LATIN5' => 'ISO-8859-9', // Turkish
+            'ISO885911' => 'ISO-8859-11',
+            'TIS620' => 'ISO-8859-11', // Thai
+            'ISO885910' => 'ISO-8859-10',
+            'LATIN6' => 'ISO-8859-10', // Nordic
+            'ISO885913' => 'ISO-8859-13',
+            'LATIN7' => 'ISO-8859-13', // Baltic
+            'ISO885914' => 'ISO-8859-14',
+            'LATIN8' => 'ISO-8859-14', // Celtic
+            'ISO885915' => 'ISO-8859-15',
+            'LATIN9' => 'ISO-8859-15', // Western European (with some extra chars e.g. €)
+            'ISO885916' => 'ISO-8859-16',
+            'LATIN10' => 'ISO-8859-16', // Southeast European
+            'CP1250' => 'WINDOWS-1250',
+            'WIN1250' => 'WINDOWS-1250',
             'WINDOWS1250' => 'WINDOWS-1250',
-            'CP1251'      => 'WINDOWS-1251',
-            'WIN1251'     => 'WINDOWS-1251',
+            'CP1251' => 'WINDOWS-1251',
+            'WIN1251' => 'WINDOWS-1251',
             'WINDOWS1251' => 'WINDOWS-1251',
-            'CP1252'      => 'WINDOWS-1252',
-            'WIN1252'     => 'WINDOWS-1252',
+            'CP1252' => 'WINDOWS-1252',
+            'WIN1252' => 'WINDOWS-1252',
             'WINDOWS1252' => 'WINDOWS-1252',
-            'CP1253'      => 'WINDOWS-1253',
-            'WIN1253'     => 'WINDOWS-1253',
+            'CP1253' => 'WINDOWS-1253',
+            'WIN1253' => 'WINDOWS-1253',
             'WINDOWS1253' => 'WINDOWS-1253',
-            'CP1254'      => 'WINDOWS-1254',
-            'WIN1254'     => 'WINDOWS-1254',
+            'CP1254' => 'WINDOWS-1254',
+            'WIN1254' => 'WINDOWS-1254',
             'WINDOWS1254' => 'WINDOWS-1254',
-            'CP1255'      => 'WINDOWS-1255',
-            'WIN1255'     => 'WINDOWS-1255',
+            'CP1255' => 'WINDOWS-1255',
+            'WIN1255' => 'WINDOWS-1255',
             'WINDOWS1255' => 'WINDOWS-1255',
-            'CP1256'      => 'WINDOWS-1256',
-            'WIN1256'     => 'WINDOWS-1256',
+            'CP1256' => 'WINDOWS-1256',
+            'WIN1256' => 'WINDOWS-1256',
             'WINDOWS1256' => 'WINDOWS-1256',
-            'CP1257'      => 'WINDOWS-1257',
-            'WIN1257'     => 'WINDOWS-1257',
+            'CP1257' => 'WINDOWS-1257',
+            'WIN1257' => 'WINDOWS-1257',
             'WINDOWS1257' => 'WINDOWS-1257',
-            'CP1258'      => 'WINDOWS-1258',
-            'WIN1258'     => 'WINDOWS-1258',
+            'CP1258' => 'WINDOWS-1258',
+            'WIN1258' => 'WINDOWS-1258',
             'WINDOWS1258' => 'WINDOWS-1258',
-            'UTF16'       => 'UTF-16',
-            'UTF32'       => 'UTF-32',
-            'UTF8'        => 'UTF-8',
-            'UTF'         => 'UTF-8',
-            'UTF7'        => 'UTF-7',
-            '8BIT'        => 'CP850',
-            'BINARY'      => 'CP850',
+            'UTF16' => 'UTF-16',
+            'UTF32' => 'UTF-32',
+            'UTF8' => 'UTF-8',
+            'UTF' => 'UTF-8',
+            'UTF7' => 'UTF-7',
+            '8BIT' => 'CP850',
+            'BINARY' => 'CP850',
         ];
 
         if (!empty($equivalences[$encoding_upper_helper])) {
@@ -6708,8 +6712,8 @@ final class UTF8
 
             /** @noinspection UnnecessaryCastingInspection */
             return (string) \mb_substr($str, 0, $index) .
-                   $substring .
-                   (string) \mb_substr($str, $index, $len);
+                $substring .
+                (string) \mb_substr($str, $index, $len);
         }
 
         $encoding = self::normalize_encoding($encoding, 'UTF-8');
@@ -6720,8 +6724,8 @@ final class UTF8
         }
 
         return ((string) self::substr($str, 0, $index, $encoding)) .
-               $substring .
-               ((string) self::substr($str, $index, $len, $encoding));
+            $substring .
+            ((string) self::substr($str, $index, $len, $encoding));
     }
 
     /**
@@ -8968,11 +8972,11 @@ final class UTF8
                 if ($use_mb_functions) {
                     if ($encoding === 'UTF-8') {
                         return \mb_strtoupper(\mb_substr($match[0], 0, 1))
-                               . \mb_strtolower(\mb_substr($match[0], 1));
+                            . \mb_strtolower(\mb_substr($match[0], 1));
                     }
 
                     return \mb_strtoupper(\mb_substr($match[0], 0, 1, $encoding), $encoding)
-                           . \mb_strtolower(\mb_substr($match[0], 1, null, $encoding), $encoding);
+                        . \mb_strtolower(\mb_substr($match[0], 1, null, $encoding), $encoding);
                 }
 
                 return self::ucfirst(
@@ -9445,13 +9449,13 @@ final class UTF8
         }
 
         return (
-               (string) self::substr(
-                   $str,
-                   0,
-                   $length,
-                   $encoding
-               )
-               ) . $substring;
+            (string) self::substr(
+                $str,
+                0,
+                $length,
+                $encoding
+            )
+        ) . $substring;
     }
 
     /**
@@ -12695,8 +12699,8 @@ final class UTF8
 
             /** @noinspection AdditionOperationOnArraysInspection */
             return ((string) \mb_substr($str, 0, $offset, $encoding)) .
-                   $replacement .
-                   ((string) \mb_substr($str, $offset + $length, $string_length - $offset - $length, $encoding));
+                $replacement .
+                ((string) \mb_substr($str, $offset + $length, $string_length - $offset - $length, $encoding));
         }
 
         //
@@ -13030,14 +13034,14 @@ final class UTF8
 
         // Info: http://php.net/manual/en/filter.filters.validate.php
         $map = [
-            'true'  => true,
-            '1'     => true,
-            'on'    => true,
-            'yes'   => true,
+            'true' => true,
+            '1' => true,
+            'on' => true,
+            'yes' => true,
             'false' => false,
-            '0'     => false,
-            'off'   => false,
-            'no'    => false,
+            '0' => false,
+            'off' => false,
+            'no' => false,
         ];
 
         if (isset($map[$str])) {
@@ -13266,16 +13270,16 @@ final class UTF8
                 } else {
                     // http://unicode.org/faq/utf_bom.html#utf16-4
                     $cp = ((int) \hexdec($matches[1]) << 10)
-                          + (int) \hexdec($matches[2])
-                          + 0x10000
-                          - (0xD800 << 10)
-                          - 0xDC00;
+                        + (int) \hexdec($matches[2])
+                        + 0x10000
+                        - (0xD800 << 10)
+                        - 0xDC00;
                 }
 
                 // https://github.com/php/php-src/blob/php-7.3.2/ext/standard/html.c#L471
                 //
                 // php_utf32_utf8(unsigned char *buf, unsigned k)
-
+    
                 if ($cp < 0x80) {
                     return (string) self::chr($cp);
                 }
@@ -13773,7 +13777,7 @@ final class UTF8
             '%94' => '”',
             '%95' => '•',
             '%96' => '–',
-            '%97' => '—',
+            '%97' => ' ',
             '%98' => '˜',
             '%99' => '™',
             '%9A' => 'š',
@@ -14349,10 +14353,10 @@ final class UTF8
                         ||
                         ($mBytes > 4)
                         ||
-                        // From Unicode 3.2, surrogate characters are illegal.
+                            // From Unicode 3.2, surrogate characters are illegal.
                         (($mUcs4 & 0xFFFFF800) === 0xD800)
                         ||
-                        // Code points outside the Unicode range are illegal.
+                            // Code points outside the Unicode range are illegal.
                         ($mUcs4 > 0x10FFFF)
                     ) {
                         return false;
@@ -14499,8 +14503,8 @@ final class UTF8
         /** @noinspection PhpComposerExtensionStubsInspection */
         /** @noinspection PhpUsageOfSilenceOperatorInspection */
         return \defined('MB_OVERLOAD_STRING')
-               &&
-               ((int) @\ini_get('mbstring.func_overload') & \MB_OVERLOAD_STRING);
+            &&
+            ((int) @\ini_get('mbstring.func_overload') & \MB_OVERLOAD_STRING);
     }
 
     /**

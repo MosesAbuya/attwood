@@ -50,7 +50,7 @@ old_story = """<div style="font-size:16px;color:#4A4340;line-height:1.8;">
 new_story = """<div style="font-size:16px;color:#4A4340;line-height:1.8;">
           <p>Attwood Travel Agency Ltd is Kenya's premier tour operator. We are the best Tour Company in Kenya, offering a wide variety of holiday packages to make your vacation unforgettable.</p>
           <p>We are a dedicated team that is passionate about wildlife and conservation. What started as a small passion project has evolved into the most trusted agency for East African tours.</p>
-          <p>When you book with Attwood, you're not just a client—you're family. We ensure value for money, honesty, and convenient booking for all your travel needs.</p>
+          <p>When you book with Attwood, you're not just a client you're family. We ensure value for money, honesty, and convenient booking for all your travel needs.</p>
         </div>"""
 
 about = about.replace(old_story, new_story)

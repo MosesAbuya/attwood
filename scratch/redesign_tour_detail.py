@@ -38,7 +38,7 @@ new_html = r'''
   <?php @include_once __DIR__.'/includes/head_tags.php'; ?>
   <style>
     /* =========================================================
-       TOUR DETAIL v2 — Attwood Brand Theme
+       TOUR DETAIL v2   Attwood Brand Theme
        ========================================================= */
     @keyframes slideInRight { from { transform:translateX(100%); opacity:0; } to { transform:translateX(0); opacity:1; } }
     @keyframes fadeUp { from { transform:translateY(30px); opacity:0; } to { transform:translateY(0); opacity:1; } }
@@ -807,8 +807,8 @@ new_html = r'''
                 $childP = $tour["price_child_{$num}_pax"] ?? null;
                 if(((float)$adultP > 0) || ((float)$childP > 0)) {
                   $hasPricing = true;
-                  $aDisp = ((float)$adultP > 0) ? '$'.number_format((float)$adultP) : '—';
-                  $cDisp = ((float)$childP > 0) ? '$'.number_format((float)$childP) : '—';
+                  $aDisp = ((float)$adultP > 0) ? '$'.number_format((float)$adultP) : ' ';
+                  $cDisp = ((float)$childP > 0) ? '$'.number_format((float)$childP) : ' ';
                   echo "<tr><td>{$label}</td><td>{$aDisp}</td><td>{$cDisp}</td></tr>";
                 }
               }
